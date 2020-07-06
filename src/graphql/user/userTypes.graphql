@@ -1,0 +1,25 @@
+scalar EmailAddress
+
+type Query {
+  users: [User]!
+}
+
+type Mutation {
+  addUser(email: EmailAddress!): User!
+}
+
+type User {
+  """
+  User ID.
+  """
+  id: ID
+  """
+  User email.
+  """
+  email: EmailAddress!
+}
+
+schema {
+  query: Query
+  mutation: Mutation
+}

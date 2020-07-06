@@ -1,0 +1,7 @@
+overwrite: true
+watch: true
+schema: "./src/**/*.graphql"
+generates:
+  src/typescript/graphql-codegen-typings.ts:
+    plugins:
+      - "typescript":
