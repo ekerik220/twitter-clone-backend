@@ -5,3 +5,4 @@ generates:
   src/typescript/graphql-codegen-typings.ts:
     plugins:
       - "typescript":
+      - "typescript-mongodb"
