@@ -3,18 +3,23 @@ import mongoose from "mongoose";
 import { environment } from "./environment";
 import { typeDefs, resolvers } from "./graphql";
 import { DateTimeMock, EmailAddressMock } from "graphql-scalars";
+import { DIRECTIVES } from "@graphql-codegen/typescript-mongodb";
 
 import userModel from "./mongodb/userModel";
+import unconfirmedUserModel, {
+  UnconfirmedUserDocument,
+} from "./mongodb/unconfirmedUserModel";
 
 export interface Context {
   models: {
     userModel: mongoose.Model<mongoose.Document, {}>;
+    unconfirmedUserModel: mongoose.Model<UnconfirmedUserDocument, {}>;
   };
 }
 
 // Set up server
 const server = new ApolloServer({
-  typeDefs,
+  typeDefs: [DIRECTIVES, ...typeDefs],
   resolvers,
   introspection: environment.apollo.introspection,
   playground: environment.apollo.playground,
@@ -23,6 +28,7 @@ const server = new ApolloServer({
   context: (): Context => ({
     models: {
       userModel,
+      unconfirmedUserModel,
     },
   }),
 });

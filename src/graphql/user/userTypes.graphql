@@ -1,25 +1,54 @@
 scalar EmailAddress
+scalar Timestamp
+scalar Date
+
+schema {
+  query: Query
+  mutation: Mutation
+}
 
 type Query {
   users: [User]!
 }
 
 type Mutation {
-  addUser(email: EmailAddress!): User!
+  """
+  Add a fully confirmed user to the DB by providing the _id of an unconfirmedUser that has
+  had it's confirmed field set to true (email has been confirmed), as well as a password.
+  """
+  addUser(id: ID!, password: String!): User!
+  """
+  Add an unconfirmed user to the DB. This will send an email to the given address with a 6 digit code
+  that has an expiry date of 2h. Have the user input this code and then use confirmUser() to check if
+  it's valid.
+  """
+  addUnconfirmedUser(
+    email: EmailAddress!
+    username: String!
+    birthdate: Date!
+  ): ID!
+  """
+  Take a 6 digit code (this was sent to the user by email), and the user's email address and
+  check that these match up in the DB. If they do, this will set their 'confirmed' field to
+  true so they can be added to the confirmed users list with addUser().
+  """
+  confirmUser(confirmationCode: String, email: EmailAddress): UnconfirmedUser!
 }
 
-type User {
-  """
-  User ID.
-  """
-  id: ID
-  """
-  User email.
-  """
-  email: EmailAddress!
+type User @entity {
+  id: ID @id
+  email: EmailAddress! @column
+  username: String! @column
+  birthdate: Date! @column
+  password: String! @column
 }
 
-schema {
-  query: Query
-  mutation: Mutation
+type UnconfirmedUser @entity {
+  id: ID @id
+  email: EmailAddress! @column
+  username: String! @column
+  birthdate: Date! @column
+  confirmed: Boolean! @column
+  confirmationCode: String! @column
+  timestamp: Timestamp! @column
 }
