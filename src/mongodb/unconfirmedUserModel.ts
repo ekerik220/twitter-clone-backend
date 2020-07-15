@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-import beautifyUnique from "mongoose-beautiful-unique-validation";
 import { UnconfirmedUserDbObject } from "../typescript/graphql-codegen-typings";
 
 const unconfirmedUserSchema = new mongoose.Schema({
@@ -28,9 +27,6 @@ const unconfirmedUserSchema = new mongoose.Schema({
     required: true,
   },
 });
-
-// Better duplicate key errors
-unconfirmedUserSchema.plugin(beautifyUnique);
 
 export type UnconfirmedUserDocument = UnconfirmedUserDbObject &
   mongoose.Document;
