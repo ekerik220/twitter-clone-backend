@@ -18,7 +18,7 @@ export const sendConfirmationCodeEmail = async (
                 <img alt="Twatter" width="32px" src="https://ci5.googleusercontent.com/proxy/ObVgYJQgSjo41l1NQLa34y0cx059F8lNASu5OoCyxyuCxcV7dd5weiertHgR-sX4Sez9dT6iROiAH7iNxp3aDP98pJwyMQJY15cXJDykaOqgncPl=s0-d-e1-ft#https://ea.twimg.com/email/self_serve/media/icon_twitter_blue.png" />
               </a>
             </div>
-            <div>
+            <div style="font-size:16px; line-height:22px;">
               <h2 style="font-size:24px;font-weight:bold;line-height:32px;">
                 Confirm your email address
               </h2>
