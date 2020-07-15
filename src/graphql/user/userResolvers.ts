@@ -17,6 +17,7 @@ import {
 } from "../errorCodes";
 import mongoose, { Error } from "mongoose";
 import bcrypt from "bcrypt";
+import { sendConfirmationCodeEmail } from "./emailer";
 
 export const userResolvers = {
   Query: {
@@ -101,13 +102,13 @@ export const userResolvers = {
           confirmationCode: randomCode(),
           timestamp: Date.now() + hoursToMilliseconds(2),
         };
-
         // add it to the DB
         const savedUser = await unconfirmedUserModel.create(unconfirmedUser);
-        // TODO: If successful, send an email to user with the confirmation code
+        sendConfirmationCodeEmail(savedUser.email, savedUser.confirmationCode);
         return savedUser._id;
       } catch (err) {
         console.log(err);
+        return -1;
       }
     },
     //* Checks if given confirmationCode matches the code on file and sets confirmed flag for user to true
