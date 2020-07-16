@@ -7,7 +7,7 @@ import userModel, { UserDocument } from "./mongodb/userModel";
 import unconfirmedUserModel, {
   UnconfirmedUserDocument,
 } from "./mongodb/unconfirmedUserModel";
-import { getUser } from "./auth";
+import { getUser } from "./utils/auth";
 
 export interface Context {
   models: {
