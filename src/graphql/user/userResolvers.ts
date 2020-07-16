@@ -62,10 +62,13 @@ export const userResolvers = {
       };
 
       // try to add it to the DB
-      // also, remove the unconfirmedUser DB entry as it's no longer needed
+      // also, remove all unconfirmedUser entries that match this email
+      // as they are no longer needed (this email is now claimed).
       try {
         const savedUser = await userModel.create(user);
-        unconfirmedUserModel.findByIdAndDelete(id);
+        // ! deleteMany wasn't deleting anything without passing in a
+        // ! callback func... it should be optional, why doesn't it work?
+        unconfirmedUserModel.deleteMany({ email: savedUser.email }, () => {});
         return savedUser;
       } catch (err) {
         // if ValidationError, check/handle if it's because of a duplicate user
