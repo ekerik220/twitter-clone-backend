@@ -32,7 +32,7 @@ type Mutation {
   check that these match up in the DB. If they do, this will set their 'confirmed' field to
   true so they can be added to the confirmed users list with addUser().
   """
-  confirmUser(confirmationCode: String, email: EmailAddress): UnconfirmedUser!
+  confirmUser(confirmationCode: String!, id: ID!): ID!
 }
 
 type User @entity {

@@ -114,13 +114,13 @@ export const userResolvers = {
     //* Checks if given confirmationCode matches the code on file and sets confirmed flag for user to true
     confirmUser: async (
       parent: any,
-      { confirmationCode, email }: MutationConfirmUserArgs,
+      { confirmationCode, id }: MutationConfirmUserArgs,
       { models: { unconfirmedUserModel } }: Context
     ) => {
       // Get user matching email
-      const user = await unconfirmedUserModel.findOne({ email });
+      const user = await unconfirmedUserModel.findById(id);
 
-      // If no user matching the given email in DB, throw an error
+      // If no user matching the given id in DB, throw an error
       if (!user)
         throw new ApolloError(
           "That unconfirmed user does not exist.",
@@ -144,7 +144,7 @@ export const userResolvers = {
       // If we passed the above checks we should be safe to set user's confirmed status to true
       user.confirmed = true;
       user.save();
-      return user;
+      return user._id;
     },
   },
 };

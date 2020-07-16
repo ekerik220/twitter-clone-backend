@@ -46,7 +46,7 @@ export type Mutation = {
    * check that these match up in the DB. If they do, this will set their 'confirmed' field to
    * true so they can be added to the confirmed users list with addUser().
    */
-  confirmUser: UnconfirmedUser;
+  confirmUser: Scalars['ID'];
 };
 
 
@@ -64,8 +64,8 @@ export type MutationAddUnconfirmedUserArgs = {
 
 
 export type MutationConfirmUserArgs = {
-  confirmationCode?: Maybe<Scalars['String']>;
-  email?: Maybe<Scalars['EmailAddress']>;
+  confirmationCode: Scalars['String'];
+  id: Scalars['ID'];
 };
 
 export type User = {
