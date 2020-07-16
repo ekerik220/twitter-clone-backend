@@ -14,7 +14,7 @@ import {
   DUPLICATE_EMAIL_ERROR,
   DUPLICATE_USER_ERROR,
   ADDING_UNCONFIRMED_USER_ERROR,
-} from "../errorCodes";
+} from "../../utils/errorCodes";
 import mongoose, { Error } from "mongoose";
 import bcrypt from "bcrypt";
 import { sendConfirmationCodeEmail } from "../../utils/emailer";
