@@ -17,3 +17,6 @@ export const DUPLICATE_USER_ERROR = "DUPLICATE_USER_ERROR";
 
 // Trying to add a fully confirmed user before adding them as an unconfirmed user and confirming their email
 export const ADDING_UNCONFIRMED_USER_ERROR = "ADDING_UNCONFIRMED_USER_ERROR";
+
+// Invalid password
+export const INVALID_PASSWORD = "INVALID_PASSWORD";

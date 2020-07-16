@@ -39,6 +39,11 @@ export type Mutation = {
    * true so they can be added to the confirmed users list with addUser().
    */
   confirmUser: Scalars['ID'];
+  /**
+   * Take an email or username and a password. If it matches a user in the database,
+   * send back a JWT with the user ID.
+   */
+  login: Scalars['String'];
   root?: Maybe<Scalars['String']>;
 };
 
@@ -59,6 +64,12 @@ export type MutationAddUserArgs = {
 export type MutationConfirmUserArgs = {
   confirmationCode: Scalars['String'];
   id: Scalars['ID'];
+};
+
+
+export type MutationLoginArgs = {
+  loginName: Scalars['String'];
+  password: Scalars['String'];
 };
 
 export type Query = {

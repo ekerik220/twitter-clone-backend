@@ -4,6 +4,7 @@ import {
   MutationConfirmUserArgs,
   User,
   UnconfirmedUser,
+  MutationLoginArgs,
 } from "../../typescript/graphql-codegen-typings";
 import { Context } from "../../main";
 import { ApolloError } from "apollo-server";
@@ -14,10 +15,12 @@ import {
   DUPLICATE_EMAIL_ERROR,
   DUPLICATE_USER_ERROR,
   ADDING_UNCONFIRMED_USER_ERROR,
+  INVALID_PASSWORD,
 } from "../../utils/errorCodes";
 import mongoose, { Error } from "mongoose";
 import bcrypt from "bcrypt";
 import { sendConfirmationCodeEmail } from "../../utils/emailer";
+import jwt from "jsonwebtoken";
 
 export const authenticationResolvers = {
   Mutation: {
@@ -139,6 +142,36 @@ export const authenticationResolvers = {
       user.confirmed = true;
       user.save();
       return user._id;
+    },
+    // * Returns a JWT token containing the user ID if credentials given are valid
+    login: async (
+      parent: any,
+      { loginName, password }: MutationLoginArgs,
+      { models: { userModel } }: Context
+    ) => {
+      // Try to find a user where either the email or username on file matches
+      // the given loginName
+      const user = await userModel.findOne({
+        $or: [{ email: loginName }, { username: loginName }],
+      });
+      // If no such user exists, throw document not found error
+      if (!user)
+        throw new ApolloError(
+          "User matching given loginName not found.",
+          DOCUMENT_NOT_FOUND_ERROR
+        );
+
+      // If password matches, return JWT with ID
+      const match = await bcrypt.compare(password, user.password);
+      if (match) {
+        const token = jwt.sign(
+          { id: user._id },
+          <string>process.env.JWT_SECRET
+        );
+        return token;
+      }
+      // Else throw an invalid password error
+      else throw new ApolloError("Invalid password.", INVALID_PASSWORD);
     },
   },
 };
