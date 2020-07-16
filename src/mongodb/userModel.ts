@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { UserDbObject } from "../typescript/graphql-codegen-typings";
 
 const userSchema = new mongoose.Schema({
   email: {
@@ -21,6 +22,8 @@ const userSchema = new mongoose.Schema({
   },
 });
 
-const User = mongoose.model("User", userSchema);
+export type UserDocument = UserDbObject & mongoose.Document;
+
+const User = mongoose.model<UserDocument>("User", userSchema);
 
 export default User;

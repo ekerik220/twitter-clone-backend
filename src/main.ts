@@ -5,14 +5,14 @@ import { typeDefs, resolvers } from "./graphql";
 import { DateTimeMock, EmailAddressMock } from "graphql-scalars";
 import { DIRECTIVES } from "@graphql-codegen/typescript-mongodb";
 
-import userModel from "./mongodb/userModel";
+import userModel, { UserDocument } from "./mongodb/userModel";
 import unconfirmedUserModel, {
   UnconfirmedUserDocument,
 } from "./mongodb/unconfirmedUserModel";
 
 export interface Context {
   models: {
-    userModel: mongoose.Model<mongoose.Document, {}>;
+    userModel: mongoose.Model<UserDocument, {}>;
     unconfirmedUserModel: mongoose.Model<UnconfirmedUserDocument, {}>;
   };
 }
