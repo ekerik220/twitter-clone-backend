@@ -75,6 +75,7 @@ export const userResolvers = {
         if (err instanceof mongoose.Error.ValidationError)
           handleDuplicateUserError(err);
         console.log(err);
+        return err;
       }
     },
     //* Adds an unconfirmedUser to the DB with a random confirmation code and an expiry timestamp (2h).
@@ -111,7 +112,7 @@ export const userResolvers = {
         return savedUser._id;
       } catch (err) {
         console.log(err);
-        return -1;
+        return err;
       }
     },
     //* Checks if given confirmationCode matches the code on file and sets confirmed flag for user to true
