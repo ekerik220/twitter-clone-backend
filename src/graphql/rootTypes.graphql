@@ -1,0 +1,12 @@
+schema {
+  query: Query
+  mutation: Mutation
+}
+
+type Query {
+  root: String
+}
+
+type Mutation {
+  root: String
+}
