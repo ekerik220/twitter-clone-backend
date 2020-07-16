@@ -1,22 +1,20 @@
 // Requested document was not found on the database
-export const DOCUMENT_NOT_FOUND_ERROR = "DOCUMENT_NOT_FOUND_ERROR";
+export const DOCUMENT_NOT_FOUND = "DOCUMENT_NOT_FOUND";
 
 // Confirmation code used to confirm user's email is expired (2 hour limit)
-export const EXPIRED_CONFIRMATION_CODE_ERROR =
-  "EXPIRED_CONFIRMATION_CODE_ERROR";
+export const EXPIRED_CONFIRMATION_CODE = "EXPIRED_CONFIRMATION_CODE";
 
 // Confirmation code used to confirm user's email is incorrect
-export const INCORRECT_CONFIRMATION_CODE_ERROR =
-  "INCORRECT_CONFIRMATION_CODE_ERROR";
+export const INCORRECT_CONFIRMATION_CODE = "INCORRECT_CONFIRMATION_CODE";
 
 // User with given email already exists on the DB
-export const DUPLICATE_EMAIL_ERROR = "DUPLICATE_EMAIL_ERROR";
+export const DUPLICATE_EMAIL = "DUPLICATE_EMAIL";
 
 // User with given username already exists on the DB
-export const DUPLICATE_USER_ERROR = "DUPLICATE_USER_ERROR";
+export const DUPLICATE_USER = "DUPLICATE_USER";
 
 // Trying to add a fully confirmed user before adding them as an unconfirmed user and confirming their email
-export const ADDING_UNCONFIRMED_USER_ERROR = "ADDING_UNCONFIRMED_USER_ERROR";
+export const ADDING_UNCONFIRMED_USER = "ADDING_UNCONFIRMED_USER";
 
 // Invalid password
 export const INVALID_PASSWORD = "INVALID_PASSWORD";

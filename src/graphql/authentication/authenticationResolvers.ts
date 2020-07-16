@@ -9,12 +9,12 @@ import {
 import { Context } from "../../main";
 import { ApolloError } from "apollo-server";
 import {
-  DOCUMENT_NOT_FOUND_ERROR,
-  EXPIRED_CONFIRMATION_CODE_ERROR,
-  INCORRECT_CONFIRMATION_CODE_ERROR,
-  DUPLICATE_EMAIL_ERROR,
-  DUPLICATE_USER_ERROR,
-  ADDING_UNCONFIRMED_USER_ERROR,
+  DOCUMENT_NOT_FOUND,
+  EXPIRED_CONFIRMATION_CODE,
+  INCORRECT_CONFIRMATION_CODE,
+  DUPLICATE_EMAIL,
+  DUPLICATE_USER,
+  ADDING_UNCONFIRMED_USER,
   INVALID_PASSWORD,
 } from "../../utils/errorCodes";
 import mongoose, { Error } from "mongoose";
@@ -39,7 +39,7 @@ export const authenticationResolvers = {
       if (!unconfirmedUser || !unconfirmedUser.confirmed)
         throw new ApolloError(
           "Cannot add a fully confirmed user before adding them as an unconfirmed user and confirming their email",
-          ADDING_UNCONFIRMED_USER_ERROR
+          ADDING_UNCONFIRMED_USER
         );
 
       // hash the given password
@@ -81,12 +81,12 @@ export const authenticationResolvers = {
       if (await userModel.exists({ email }))
         throw new ApolloError(
           "User with that email already exists.",
-          DUPLICATE_EMAIL_ERROR
+          DUPLICATE_EMAIL
         );
       if (await userModel.exists({ username }))
         throw new ApolloError(
           "User with that user name already exists.",
-          DUPLICATE_USER_ERROR
+          DUPLICATE_USER
         );
 
       try {
@@ -121,21 +121,21 @@ export const authenticationResolvers = {
       if (!user)
         throw new ApolloError(
           "That unconfirmed user does not exist.",
-          DOCUMENT_NOT_FOUND_ERROR
+          DOCUMENT_NOT_FOUND
         );
 
       // If the code on file is expired, throw an error
       if (Date.now() > user.timestamp)
         throw new ApolloError(
           "Confirmation code is expired.",
-          EXPIRED_CONFIRMATION_CODE_ERROR
+          EXPIRED_CONFIRMATION_CODE
         );
 
       // If the code on file does not match the given code, throw an error
       if (user.confirmationCode !== confirmationCode)
         throw new ApolloError(
           "Confirmation code does not match.",
-          INCORRECT_CONFIRMATION_CODE_ERROR
+          INCORRECT_CONFIRMATION_CODE
         );
 
       // If we passed the above checks we should be safe to set user's confirmed status to true
@@ -158,7 +158,7 @@ export const authenticationResolvers = {
       if (!user)
         throw new ApolloError(
           "User matching given loginName not found.",
-          DOCUMENT_NOT_FOUND_ERROR
+          DOCUMENT_NOT_FOUND
         );
 
       // If password matches, return JWT with ID
@@ -191,11 +191,11 @@ function handleDuplicateUserError(err: any) {
   if (err.errors["email"] && err.errors["email"].kind === "unique")
     throw new ApolloError(
       "User with that email already exists.",
-      DUPLICATE_EMAIL_ERROR
+      DUPLICATE_EMAIL
     );
   if (err.errors["username"] && err.errors["username"].kind == "unique")
     throw new ApolloError(
       "User with that user name already exists.",
-      DUPLICATE_USER_ERROR
+      DUPLICATE_USER
     );
 }
