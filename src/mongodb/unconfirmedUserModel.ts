@@ -5,10 +5,13 @@ const unconfirmedUserSchema = new mongoose.Schema({
   email: {
     type: String,
     required: true,
+    maxLength: 80,
   },
   username: {
     type: String,
     required: true,
+    minLength: 1,
+    maxLength: 50,
   },
   birthdate: {
     type: Date,
