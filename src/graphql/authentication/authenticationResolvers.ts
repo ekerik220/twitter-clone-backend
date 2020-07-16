@@ -21,6 +21,7 @@ import mongoose, { Error } from "mongoose";
 import bcrypt from "bcrypt";
 import { sendConfirmationCodeEmail } from "../../utils/emailer";
 import jwt from "jsonwebtoken";
+import { environment } from "../../environment";
 
 export const authenticationResolvers = {
   Mutation: {
@@ -164,10 +165,7 @@ export const authenticationResolvers = {
       // If password matches, return JWT with ID
       const match = await bcrypt.compare(password, user.password);
       if (match) {
-        const token = jwt.sign(
-          { id: user._id },
-          <string>process.env.JWT_SECRET
-        );
+        const token = jwt.sign({ id: user._id }, environment.jwtSecret);
         return token;
       }
       // Else throw an invalid password error

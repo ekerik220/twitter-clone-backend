@@ -1,4 +1,5 @@
 import nodemailer from "nodemailer";
+import { environment } from "../environment";
 
 /**
  * Sends out an email containing a confirmation code.
@@ -14,7 +15,7 @@ export const sendConfirmationCodeEmail = async (
         <div style="background: rgb(245, 248, 250); width: 100%; height: 100%; padding-bottom: 30px;">
           <div style="background: white; width: 450px; margin: 0 auto; padding: 30px; font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;">
             <div>
-              <a href="${process.env.HOME_PAGE}" target="_blank" style="margin-left:90%">
+              <a href="${environment.homepage}" target="_blank" style="margin-left:90%">
                 <img alt="Twatter" width="32px" src="https://ci5.googleusercontent.com/proxy/ObVgYJQgSjo41l1NQLa34y0cx059F8lNASu5OoCyxyuCxcV7dd5weiertHgR-sX4Sez9dT6iROiAH7iNxp3aDP98pJwyMQJY15cXJDykaOqgncPl=s0-d-e1-ft#https://ea.twimg.com/email/self_serve/media/icon_twitter_blue.png" />
               </a>
             </div>
@@ -42,14 +43,14 @@ export const sendConfirmationCodeEmail = async (
   const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
-      user: process.env.EMAIL,
-      pass: process.env.EMAIL_PASS,
+      user: environment.email.username,
+      pass: environment.email.password,
     },
   });
 
   // set up the email to send
   const mailOptions = {
-    from: process.env.EMAIL,
+    from: environment.email.username,
     to: sendTo,
     subject: `${confirmationCode} is your Twatter verification code`,
     html: body,
