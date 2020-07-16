@@ -4,17 +4,18 @@ import { environment } from "./environment";
 import { typeDefs, resolvers } from "./graphql";
 import { DateTimeMock, EmailAddressMock } from "graphql-scalars";
 import { DIRECTIVES } from "@graphql-codegen/typescript-mongodb";
-
 import userModel, { UserDocument } from "./mongodb/userModel";
 import unconfirmedUserModel, {
   UnconfirmedUserDocument,
 } from "./mongodb/unconfirmedUserModel";
+import { getUser } from "./auth";
 
 export interface Context {
   models: {
     userModel: mongoose.Model<UserDocument, {}>;
     unconfirmedUserModel: mongoose.Model<UnconfirmedUserDocument, {}>;
   };
+  user: string | undefined;
 }
 
 // Set up server
@@ -23,13 +24,14 @@ const server = new ApolloServer({
   resolvers,
   introspection: environment.apollo.introspection,
   playground: environment.apollo.playground,
-  mocks: { DateTime: DateTimeMock, EmailAddress: EmailAddressMock }, // TODO: Remove in production
-  mockEntireSchema: false, // TODO: Remove in production
-  context: (): Context => ({
+  context: ({ req }): Context => ({
     models: {
       userModel,
       unconfirmedUserModel,
     },
+    user: req.headers.authorization
+      ? getUser(req.headers.authorization)
+      : undefined,
   }),
 });
 
