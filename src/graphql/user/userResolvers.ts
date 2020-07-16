@@ -17,7 +17,7 @@ import {
 } from "../errorCodes";
 import mongoose, { Error } from "mongoose";
 import bcrypt from "bcrypt";
-import { sendConfirmationCodeEmail } from "./emailer";
+import { sendConfirmationCodeEmail } from "../../utils/emailer";
 
 export const userResolvers = {
   Query: {
