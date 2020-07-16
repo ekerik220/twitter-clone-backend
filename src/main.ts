@@ -2,7 +2,6 @@ import { ApolloServer } from "apollo-server";
 import mongoose from "mongoose";
 import { environment } from "./environment";
 import { typeDefs, resolvers } from "./graphql";
-import { DateTimeMock, EmailAddressMock } from "graphql-scalars";
 import { DIRECTIVES } from "@graphql-codegen/typescript-mongodb";
 import userModel, { UserDocument } from "./mongodb/userModel";
 import unconfirmedUserModel, {
