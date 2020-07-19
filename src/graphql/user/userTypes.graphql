@@ -4,6 +4,10 @@ scalar Date
 
 extend type Query {
   users: [User]!
+  """
+  Checks if a user exists with given email.
+  """
+  emailTaken(email: String!): Boolean!
 }
 
 type User @entity {

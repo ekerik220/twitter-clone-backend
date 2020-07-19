@@ -74,8 +74,15 @@ export type MutationLoginArgs = {
 
 export type Query = {
   __typename?: 'Query';
+  /** Checks if a user exists with given email. */
+  emailTaken: Scalars['Boolean'];
   root?: Maybe<Scalars['String']>;
   users: Array<Maybe<User>>;
+};
+
+
+export type QueryEmailTakenArgs = {
+  email: Scalars['String'];
 };
 
 
