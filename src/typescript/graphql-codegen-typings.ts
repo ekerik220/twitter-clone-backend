@@ -77,12 +77,19 @@ export type Query = {
   /** Checks if a user exists with given email. */
   emailTaken: Scalars['Boolean'];
   root?: Maybe<Scalars['String']>;
+  /** Checks if a user with given username exists. */
+  usernameTaken: Scalars['Boolean'];
   users: Array<Maybe<User>>;
 };
 
 
 export type QueryEmailTakenArgs = {
   email: Scalars['String'];
+};
+
+
+export type QueryUsernameTakenArgs = {
+  username: Scalars['String'];
 };
 
 

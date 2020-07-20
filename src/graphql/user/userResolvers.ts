@@ -1,5 +1,8 @@
 import { Context } from "../../main";
-import { QueryEmailTakenArgs } from "../../typescript/graphql-codegen-typings";
+import {
+  QueryEmailTakenArgs,
+  QueryUsernameTakenArgs,
+} from "../../typescript/graphql-codegen-typings";
 
 export const userResolvers = {
   Query: {
@@ -18,6 +21,14 @@ export const userResolvers = {
       { models: { userModel } }: Context
     ) => {
       const exists = await userModel.exists({ email });
+      return exists;
+    },
+    usernameTaken: async (
+      parent: any,
+      { username }: QueryUsernameTakenArgs,
+      { models: { userModel } }: Context
+    ) => {
+      const exists = await userModel.exists({ username });
       return exists;
     },
   },
