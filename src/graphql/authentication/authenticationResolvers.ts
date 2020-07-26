@@ -156,10 +156,14 @@ export const authenticationResolvers = {
       { loginName, password }: MutationLoginArgs,
       { models: { userModel } }: Context
     ) => {
-      // Try to find a user where either the email or username on file matches
+      // If first character of loginName was @ (as it might be for a handle), remove it
+      let curatedName = loginName;
+      if (curatedName[0] === "@") curatedName = curatedName.slice(1);
+
+      // Try to find a user where either the email or handle on file matches
       // the given loginName
       const user = await userModel.findOne({
-        $or: [{ email: loginName }, { username: loginName }],
+        $or: [{ email: curatedName }, { handle: curatedName }],
       });
       // If no such user exists, throw document not found error
       if (!user)
