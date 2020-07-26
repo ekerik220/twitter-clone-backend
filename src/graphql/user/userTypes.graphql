@@ -3,6 +3,11 @@ scalar Timestamp
 scalar Date
 
 extend type Query {
+  """
+  Gets the currently logged in user
+  """
+  self: User!
+
   users: [User]!
   """
   Checks if a user exists with given email.
@@ -15,12 +20,18 @@ extend type Query {
   usernameTaken(username: String!): Boolean!
 }
 
+extend type Mutation {
+  setAvatarImage(file: Upload!): User!
+}
+
 type User @entity {
   id: ID @id
   email: EmailAddress! @column
   username: String! @column
   birthdate: Date! @column
   password: String! @column
+  avatar: String @column
+  handle: String! @column
 }
 
 type UnconfirmedUser @entity {
@@ -31,4 +42,11 @@ type UnconfirmedUser @entity {
   confirmed: Boolean! @column
   confirmationCode: String! @column
   timestamp: Timestamp! @column
+}
+
+type UploadFileResponse {
+  filename: String!
+  mimetype: String!
+  encoding: String!
+  url: String!
 }

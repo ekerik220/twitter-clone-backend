@@ -10,6 +10,7 @@ export type Scalars = {
   EmailAddress: any;
   Timestamp: any;
   Date: any;
+  Upload: any;
 };
 
 
@@ -45,6 +46,7 @@ export type Mutation = {
    */
   login: Scalars['String'];
   root?: Maybe<Scalars['String']>;
+  setAvatarImage: User;
 };
 
 
@@ -72,11 +74,18 @@ export type MutationLoginArgs = {
   password: Scalars['String'];
 };
 
+
+export type MutationSetAvatarImageArgs = {
+  file: Scalars['Upload'];
+};
+
 export type Query = {
   __typename?: 'Query';
   /** Checks if a user exists with given email. */
   emailTaken: Scalars['Boolean'];
   root?: Maybe<Scalars['String']>;
+  /** Gets the currently logged in user */
+  self: User;
   /** Checks if a user with given username exists. */
   usernameTaken: Scalars['Boolean'];
   users: Array<Maybe<User>>;
@@ -95,6 +104,7 @@ export type QueryUsernameTakenArgs = {
 
 
 
+
 export type User = {
   __typename?: 'User';
   id?: Maybe<Scalars['ID']>;
@@ -102,6 +112,7 @@ export type User = {
   username: Scalars['String'];
   birthdate: Scalars['Date'];
   password: Scalars['String'];
+  avatar?: Maybe<Scalars['String']>;
   handle?: Maybe<Scalars['String']>;
 };
 
@@ -116,6 +127,14 @@ export type UnconfirmedUser = {
   timestamp: Scalars['Timestamp'];
 };
 
+export type UploadFileResponse = {
+  __typename?: 'UploadFileResponse';
+  filename: Scalars['String'];
+  mimetype: Scalars['String'];
+  encoding: Scalars['String'];
+  url: Scalars['String'];
+};
+
 export type AdditionalEntityFields = {
   path?: Maybe<Scalars['String']>;
   type?: Maybe<Scalars['String']>;
@@ -128,6 +147,7 @@ export type UserDbObject = {
   username: string,
   birthdate: any,
   password: string,
+  avatar?: Maybe<string>,
   handle?: Maybe<string>,
 };
 
