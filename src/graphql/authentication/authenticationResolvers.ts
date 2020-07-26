@@ -13,7 +13,6 @@ import {
   EXPIRED_CONFIRMATION_CODE,
   INCORRECT_CONFIRMATION_CODE,
   DUPLICATE_EMAIL,
-  DUPLICATE_USER,
   ADDING_UNCONFIRMED_USER,
   INVALID_PASSWORD,
 } from "../../utils/errorCodes";
@@ -47,12 +46,24 @@ export const authenticationResolvers = {
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash(password, salt);
 
+      // create a unique handle from the username
+      let handle = unconfirmedUser.username.replace(/\s/g, "_").toLowerCase();
+      let extraNum = 0;
+      let exists = await userModel.exists({ handle });
+      while (exists) {
+        const newHandle = handle + "_" + extraNum.toString();
+        exists = await userModel.exists({ newHandle });
+        if (exists) extraNum++;
+        else handle = newHandle;
+      }
+
       // create User object to add to DB
       const user: User = {
         email: unconfirmedUser.email,
         username: unconfirmedUser.username,
         birthdate: unconfirmedUser.birthdate,
         password: hashedPassword,
+        handle,
       };
 
       // try to add it to the DB
@@ -78,16 +89,11 @@ export const authenticationResolvers = {
       { email, username, birthdate }: MutationAddUnconfirmedUserArgs,
       { models: { userModel, unconfirmedUserModel } }: Context
     ) => {
-      // Make sure a user with this email or username doesn't exist in the *confirmed* users DB first
+      // Make sure a user with this email doesn't exist in the *confirmed* users DB first
       if (await userModel.exists({ email }))
         throw new ApolloError(
           "User with that email already exists.",
           DUPLICATE_EMAIL
-        );
-      if (await userModel.exists({ username }))
-        throw new ApolloError(
-          "User with that user name already exists.",
-          DUPLICATE_USER
         );
 
       try {
@@ -190,10 +196,5 @@ function handleDuplicateUserError(err: any) {
     throw new ApolloError(
       "User with that email already exists.",
       DUPLICATE_EMAIL
-    );
-  if (err.errors["username"] && err.errors["username"].kind == "unique")
-    throw new ApolloError(
-      "User with that user name already exists.",
-      DUPLICATE_USER
     );
 }

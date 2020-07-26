@@ -24,6 +24,10 @@ const userSchema = new mongoose.Schema({
     type: Date,
     required: true,
   },
+  handle: {
+    type: String,
+    required: true,
+  },
 });
 
 export type UserDocument = UserDbObject & mongoose.Document;

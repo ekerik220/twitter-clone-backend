@@ -10,9 +10,6 @@ export const INCORRECT_CONFIRMATION_CODE = "INCORRECT_CONFIRMATION_CODE";
 // User with given email already exists on the DB
 export const DUPLICATE_EMAIL = "DUPLICATE_EMAIL";
 
-// User with given username already exists on the DB
-export const DUPLICATE_USER = "DUPLICATE_USER";
-
 // Trying to add a fully confirmed user before adding them as an unconfirmed user and confirming their email
 export const ADDING_UNCONFIRMED_USER = "ADDING_UNCONFIRMED_USER";
 

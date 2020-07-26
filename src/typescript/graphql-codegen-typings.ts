@@ -102,6 +102,7 @@ export type User = {
   username: Scalars['String'];
   birthdate: Scalars['Date'];
   password: Scalars['String'];
+  handle?: Maybe<Scalars['String']>;
 };
 
 export type UnconfirmedUser = {
@@ -127,6 +128,7 @@ export type UserDbObject = {
   username: string,
   birthdate: any,
   password: string,
+  handle?: Maybe<string>,
 };
 
 export type UnconfirmedUserDbObject = {
