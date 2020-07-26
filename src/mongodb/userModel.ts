@@ -11,7 +11,6 @@ const userSchema = new mongoose.Schema({
   username: {
     type: String,
     required: true,
-    unique: true,
     maxLength: 50,
   },
   password: {
@@ -27,6 +26,7 @@ const userSchema = new mongoose.Schema({
   handle: {
     type: String,
     required: true,
+    unique: true,
   },
 });
 
