@@ -2,10 +2,25 @@ import { Context } from "../../main";
 import {
   QueryEmailTakenArgs,
   QueryUsernameTakenArgs,
+  MutationSetAvatarImageArgs,
 } from "../../typescript/graphql-codegen-typings";
+import cloudinary from "cloudinary";
+import { ApolloError } from "apollo-server";
+import { DOCUMENT_NOT_FOUND } from "../../utils/errorCodes";
 
 export const userResolvers = {
   Query: {
+    self: async (
+      parent: any,
+      args: any,
+      { models: { userModel }, user }: Context
+    ) => {
+      const self = await userModel.findById(user);
+
+      if (!self) throw new ApolloError("User not found.", DOCUMENT_NOT_FOUND);
+
+      return self;
+    },
     users: async (
       parent: any,
       args: any,
