@@ -32,7 +32,11 @@ type User @entity {
   password: String! @column
   avatar: String @column
   handle: String! @column
-  tweets: [String]! @column
+  tweetIDs: [String]! @column
+  """
+  Gets all the tweets in user's tweet list
+  """
+  tweets: [Tweet]
 }
 
 type UnconfirmedUser @entity {

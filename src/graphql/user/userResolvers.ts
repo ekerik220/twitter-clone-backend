@@ -3,10 +3,12 @@ import {
   QueryEmailTakenArgs,
   QueryUsernameTakenArgs,
   MutationSetAvatarImageArgs,
+  User,
 } from "../../typescript/graphql-codegen-typings";
 import cloudinary from "cloudinary";
 import { ApolloError } from "apollo-server";
 import { DOCUMENT_NOT_FOUND } from "../../utils/errorCodes";
+import Tweet from "../../mongodb/tweetModel";
 
 export const userResolvers = {
   Query: {
@@ -63,6 +65,20 @@ export const userResolvers = {
       const saved = await self.save();
 
       return saved;
+    },
+  },
+  User: {
+    tweets: async (
+      parent: User,
+      args: any,
+      { models: { tweetModel } }: Context
+    ) => {
+      const tweetIDs = parent.tweetIDs;
+      const tweets = await tweetModel.find({ _id: { $in: tweetIDs } });
+      tweets.sort(
+        (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+      );
+      return tweets;
     },
   },
 };

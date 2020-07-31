@@ -132,7 +132,9 @@ export type User = {
   password: Scalars['String'];
   avatar?: Maybe<Scalars['String']>;
   handle: Scalars['String'];
-  tweets: Array<Maybe<Scalars['String']>>;
+  tweetIDs: Array<Maybe<Scalars['String']>>;
+  /** Gets all the tweets in user's tweet list */
+  tweets?: Maybe<Array<Maybe<Tweet>>>;
 };
 
 export type UnconfirmedUser = {
@@ -181,7 +183,7 @@ export type UserDbObject = {
   password: string,
   avatar?: Maybe<string>,
   handle: string,
-  tweets: Array<Maybe<string>>,
+  tweetIDs: Array<Maybe<string>>,
 };
 
 export type UnconfirmedUserDbObject = {

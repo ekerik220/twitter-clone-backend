@@ -34,7 +34,7 @@ export const tweetResolvers = {
         username: userDoc.username,
         handle: userDoc.handle,
         avatar: userDoc.avatar,
-        date: Date.now(),
+        date: new Date(),
         body,
       };
 
@@ -42,7 +42,7 @@ export const tweetResolvers = {
       const savedTweet = await tweetModel.create(tweet);
 
       // Add the id of the tweet to front of user's list of tweets
-      userDoc.tweets.unshift(savedTweet._id);
+      userDoc.tweetIDs.unshift(savedTweet._id);
       userDoc.save();
 
       return savedTweet;
