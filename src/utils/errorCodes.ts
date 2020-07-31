@@ -15,3 +15,6 @@ export const ADDING_UNCONFIRMED_USER = "ADDING_UNCONFIRMED_USER";
 
 // Invalid password
 export const INVALID_PASSWORD = "INVALID_PASSWORD";
+
+// Not authenticated
+export const NOT_AUTHENICATED = "NOT_AUTHENTICATED";

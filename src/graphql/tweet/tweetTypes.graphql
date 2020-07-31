@@ -1,0 +1,15 @@
+extend type Mutation {
+  addTweet(body: String!): Tweet
+}
+
+type Tweet @entity {
+  id: ID @id
+  userID: ID! @column
+  username: String! @column
+  handle: String! @column
+  avatar: String @column
+  date: Date! @column
+  body: String! @column
+  images: [String] @column
+  replyingToID: ID @column
+}

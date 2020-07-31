@@ -23,6 +23,7 @@ export type Scalars = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  addTweet?: Maybe<Tweet>;
   /**
    * Add an unconfirmed user to the DB. This will send an email to the given address with a 6 digit code
    * that has an expiry date of 2h. Have the user input this code and then use confirmUser() to check if
@@ -47,6 +48,11 @@ export type Mutation = {
   login: Scalars['String'];
   root?: Maybe<Scalars['String']>;
   setAvatarImage: User;
+};
+
+
+export type MutationAddTweetArgs = {
+  body: Scalars['String'];
 };
 
 
@@ -101,6 +107,18 @@ export type QueryUsernameTakenArgs = {
   username: Scalars['String'];
 };
 
+export type Tweet = {
+  __typename?: 'Tweet';
+  id?: Maybe<Scalars['ID']>;
+  userID: Scalars['ID'];
+  username: Scalars['String'];
+  handle: Scalars['String'];
+  avatar?: Maybe<Scalars['String']>;
+  date: Scalars['Date'];
+  body: Scalars['String'];
+  images?: Maybe<Array<Maybe<Scalars['String']>>>;
+  replyingToID?: Maybe<Scalars['ID']>;
+};
 
 
 
@@ -136,12 +154,25 @@ export type UploadFileResponse = {
   url: Scalars['String'];
 };
 
+
 export type AdditionalEntityFields = {
   path?: Maybe<Scalars['String']>;
   type?: Maybe<Scalars['String']>;
 };
 
 import { ObjectID } from 'mongodb';
+export type TweetDbObject = {
+  _id?: Maybe<ObjectID>,
+  userID: string,
+  username: string,
+  handle: string,
+  avatar?: Maybe<string>,
+  date: any,
+  body: string,
+  images?: Maybe<Array<Maybe<string>>>,
+  replyingToID?: Maybe<string>,
+};
+
 export type UserDbObject = {
   _id?: Maybe<ObjectID>,
   email: any,

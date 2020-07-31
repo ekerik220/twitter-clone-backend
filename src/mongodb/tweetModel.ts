@@ -1,0 +1,40 @@
+import mongoose from "mongoose";
+import { TweetDbObject } from "../typescript/graphql-codegen-typings";
+
+const tweetSchema = new mongoose.Schema({
+  userID: {
+    type: String,
+    required: true,
+  },
+  username: {
+    type: String,
+    required: true,
+  },
+  handle: {
+    type: String,
+    required: true,
+  },
+  avatar: {
+    type: String,
+  },
+  date: {
+    type: Date,
+    required: true,
+  },
+  body: {
+    type: String,
+    required: true,
+  },
+  images: {
+    type: [String],
+  },
+  replyingToID: {
+    type: String,
+  },
+});
+
+export type TweetDocument = TweetDbObject & mongoose.Document;
+
+const Tweet = mongoose.model<TweetDocument>("Tweet", tweetSchema);
+
+export default Tweet;
