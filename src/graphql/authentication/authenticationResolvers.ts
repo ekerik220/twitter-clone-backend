@@ -64,6 +64,7 @@ export const authenticationResolvers = {
         birthdate: unconfirmedUser.birthdate,
         password: hashedPassword,
         handle,
+        tweets: [],
       };
 
       // try to add it to the DB

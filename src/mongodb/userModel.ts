@@ -32,6 +32,10 @@ const userSchema = new mongoose.Schema({
     required: true,
     unique: true,
   },
+  tweets: {
+    type: [String],
+    required: true,
+  },
 });
 
 export type UserDocument = UserDbObject & mongoose.Document;

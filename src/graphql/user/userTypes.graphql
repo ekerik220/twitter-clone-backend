@@ -32,6 +32,7 @@ type User @entity {
   password: String! @column
   avatar: String @column
   handle: String! @column
+  tweets: [String]! @column
 }
 
 type UnconfirmedUser @entity {
