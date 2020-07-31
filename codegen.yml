@@ -1,6 +1,8 @@
 overwrite: true
 watch: true
-schema: "./src/**/*.graphql"
+schema:
+  - "./src/**/*.graphql"
+  - scalar Upload
 generates:
   src/typescript/graphql-codegen-typings.ts:
     plugins:
