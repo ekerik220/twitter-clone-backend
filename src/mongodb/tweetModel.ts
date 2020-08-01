@@ -31,6 +31,10 @@ const tweetSchema = new mongoose.Schema({
   replyingToID: {
     type: String,
   },
+  likeIDs: {
+    type: [String],
+    required: true,
+  },
 });
 
 export type TweetDocument = TweetDbObject & mongoose.Document;

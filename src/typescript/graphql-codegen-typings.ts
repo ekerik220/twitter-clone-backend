@@ -23,6 +23,7 @@ export type Scalars = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  addOrRemoveLike: Array<Maybe<Scalars['ID']>>;
   addTweet?: Maybe<Tweet>;
   /**
    * Add an unconfirmed user to the DB. This will send an email to the given address with a 6 digit code
@@ -48,6 +49,11 @@ export type Mutation = {
   login: Scalars['String'];
   root?: Maybe<Scalars['String']>;
   setAvatarImage: User;
+};
+
+
+export type MutationAddOrRemoveLikeArgs = {
+  tweet: Scalars['ID'];
 };
 
 
@@ -92,6 +98,7 @@ export type Query = {
   root?: Maybe<Scalars['String']>;
   /** Gets the currently logged in user */
   self: User;
+  tweet: Tweet;
   /** Checks if a user with given username exists. */
   usernameTaken: Scalars['Boolean'];
   users: Array<Maybe<User>>;
@@ -100,6 +107,11 @@ export type Query = {
 
 export type QueryEmailTakenArgs = {
   email: Scalars['String'];
+};
+
+
+export type QueryTweetArgs = {
+  id: Scalars['ID'];
 };
 
 
@@ -118,6 +130,7 @@ export type Tweet = {
   body: Scalars['String'];
   images?: Maybe<Array<Maybe<Scalars['String']>>>;
   replyingToID?: Maybe<Scalars['ID']>;
+  likeIDs: Array<Maybe<Scalars['ID']>>;
 };
 
 
@@ -173,6 +186,7 @@ export type TweetDbObject = {
   body: string,
   images?: Maybe<Array<Maybe<string>>>,
   replyingToID?: Maybe<string>,
+  likeIDs: Array<Maybe<string>>,
 };
 
 export type UserDbObject = {

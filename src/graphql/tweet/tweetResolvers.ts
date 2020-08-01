@@ -1,6 +1,8 @@
 import {
   MutationAddTweetArgs,
   Tweet,
+  MutationAddOrRemoveLikeArgs,
+  QueryTweetArgs,
 } from "../../typescript/graphql-codegen-typings";
 import { Context } from "../../main";
 import { ApolloError } from "apollo-server";
@@ -36,6 +38,7 @@ export const tweetResolvers = {
         avatar: userDoc.avatar,
         date: new Date(),
         body,
+        likeIDs: [],
       };
 
       // Add the tweet object to Tweet collection
@@ -46,6 +49,49 @@ export const tweetResolvers = {
       userDoc.save();
 
       return savedTweet;
+    },
+    addOrRemoveLike: async (
+      parent: any,
+      { tweet }: MutationAddOrRemoveLikeArgs,
+      { models: { tweetModel }, user }: Context
+    ) => {
+      // Check the user is logged in
+      if (!user)
+        throw new ApolloError(
+          "Must be logged in to like a tweet.",
+          NOT_AUTHENICATED
+        );
+
+      // Get tweet from DB
+      const tweetDoc = await tweetModel.findById(tweet);
+      if (!tweetDoc)
+        throw new ApolloError("Tweet does not exist", DOCUMENT_NOT_FOUND);
+
+      // If user ID exists in likes, remove it
+      const index = tweetDoc.likeIDs.indexOf(user);
+      if (index > -1) tweetDoc.likeIDs.splice(index, 1);
+      else tweetDoc.likeIDs.push(user);
+
+      // Save changes
+      const savedDoc = await tweetDoc.save();
+
+      // Return new like list
+      return savedDoc.likeIDs;
+    },
+  },
+  Query: {
+    tweet: async (
+      parent: any,
+      { id }: QueryTweetArgs,
+      { models: { tweetModel } }: Context
+    ) => {
+      // Find the tweet by ID
+      const tweet = await tweetModel.findById(id);
+      if (!tweet)
+        throw new ApolloError("No tweet with given ID.", DOCUMENT_NOT_FOUND);
+
+      // return the tweet
+      return tweet;
     },
   },
 };
