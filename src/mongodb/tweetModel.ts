@@ -28,8 +28,12 @@ const tweetSchema = new mongoose.Schema({
   images: {
     type: [String],
   },
-  replyingToID: {
+  replyingTo: {
     type: String,
+  },
+  commentIDs: {
+    type: [String],
+    required: true,
   },
   likeIDs: {
     type: [String],

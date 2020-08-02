@@ -3,6 +3,7 @@ import {
   Tweet,
   MutationAddOrRemoveLikeArgs,
   QueryTweetArgs,
+  MutationAddCommentArgs,
 } from "../../typescript/graphql-codegen-typings";
 import { Context } from "../../main";
 import { ApolloError } from "apollo-server";
@@ -39,6 +40,7 @@ export const tweetResolvers = {
         date: new Date(),
         body,
         likeIDs: [],
+        commentIDs: [],
       };
 
       // Add the tweet object to Tweet collection
@@ -49,6 +51,54 @@ export const tweetResolvers = {
       userDoc.save();
 
       return savedTweet;
+    },
+    addComment: async (
+      parent: any,
+      { replyingToID, body }: MutationAddCommentArgs,
+      { models: { tweetModel, userModel }, user }: Context
+    ) => {
+      // Get the tweet we're replying to
+      const parentTweet = await tweetModel.findById(replyingToID);
+      if (!parentTweet)
+        throw new ApolloError(
+          "The tweet you're commenting on does not exist.",
+          DOCUMENT_NOT_FOUND
+        );
+
+      // Get the user that's making this comment
+      const userDoc = await userModel.findById(user);
+      if (!userDoc)
+        throw new ApolloError(
+          "Must be logged in to comment.",
+          NOT_AUTHENICATED
+        );
+
+      // Make a tweet object (comment)
+      const comment: Tweet = {
+        userID: userDoc._id,
+        username: userDoc.username,
+        handle: userDoc.handle,
+        avatar: userDoc.avatar,
+        date: new Date(),
+        body,
+        likeIDs: [],
+        commentIDs: [],
+        replyingTo: parentTweet.handle,
+      };
+
+      // Add comment to tweet DB
+      const commentDoc = await tweetModel.create(comment);
+
+      // Add comment ID to the parentTweet's comment list
+      parentTweet.commentIDs.push(commentDoc.id);
+      parentTweet.save();
+
+      // Add comment ID to user's tweet list
+      userDoc.tweetIDs.push(commentDoc.id);
+      userDoc.save();
+
+      // return comment
+      return commentDoc;
     },
     addOrRemoveLike: async (
       parent: any,
@@ -92,6 +142,25 @@ export const tweetResolvers = {
 
       // return the tweet
       return tweet;
+    },
+  },
+  Tweet: {
+    comments: async (
+      parent: Tweet,
+      args: any,
+      { models: { tweetModel } }: Context
+    ) => {
+      // Get all the comment documents using parent's commentIDs array
+      const comments = await tweetModel.find({
+        _id: { $in: parent.commentIDs },
+      });
+
+      // Sort the comments by their date
+      comments.sort(
+        (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+      );
+
+      return comments;
     },
   },
 };

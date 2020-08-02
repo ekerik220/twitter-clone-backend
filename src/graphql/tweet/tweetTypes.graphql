@@ -1,5 +1,6 @@
 extend type Mutation {
   addTweet(body: String!): Tweet
+  addComment(replyingToID: ID!, body: String!): Tweet
   addOrRemoveLike(tweet: ID!): [ID]!
 }
 
@@ -16,6 +17,12 @@ type Tweet @entity {
   date: Date! @column
   body: String! @column
   images: [String] @column
-  replyingToID: ID @column
   likeIDs: [ID]! @column
+  replyingTo: ID @column
+  commentIDs: [ID]! @column
+
+  """
+  Returns all the comments on this tweet
+  """
+  comments: [Tweet]
 }

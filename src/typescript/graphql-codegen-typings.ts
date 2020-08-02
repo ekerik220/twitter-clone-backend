@@ -23,6 +23,7 @@ export type Scalars = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  addComment?: Maybe<Tweet>;
   addOrRemoveLike: Array<Maybe<Scalars['ID']>>;
   addTweet?: Maybe<Tweet>;
   /**
@@ -49,6 +50,12 @@ export type Mutation = {
   login: Scalars['String'];
   root?: Maybe<Scalars['String']>;
   setAvatarImage: User;
+};
+
+
+export type MutationAddCommentArgs = {
+  replyingToID: Scalars['ID'];
+  body: Scalars['String'];
 };
 
 
@@ -129,8 +136,11 @@ export type Tweet = {
   date: Scalars['Date'];
   body: Scalars['String'];
   images?: Maybe<Array<Maybe<Scalars['String']>>>;
-  replyingToID?: Maybe<Scalars['ID']>;
   likeIDs: Array<Maybe<Scalars['ID']>>;
+  replyingTo?: Maybe<Scalars['ID']>;
+  commentIDs: Array<Maybe<Scalars['ID']>>;
+  /** Returns all the comments on this tweet */
+  comments?: Maybe<Array<Maybe<Tweet>>>;
 };
 
 
@@ -185,8 +195,9 @@ export type TweetDbObject = {
   date: any,
   body: string,
   images?: Maybe<Array<Maybe<string>>>,
-  replyingToID?: Maybe<string>,
   likeIDs: Array<Maybe<string>>,
+  replyingTo?: Maybe<string>,
+  commentIDs: Array<Maybe<string>>,
 };
 
 export type UserDbObject = {
