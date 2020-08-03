@@ -25,6 +25,7 @@ export type Mutation = {
   __typename?: 'Mutation';
   addComment?: Maybe<Tweet>;
   addOrRemoveLike: Array<Maybe<Scalars['ID']>>;
+  addRetweet?: Maybe<Tweet>;
   addTweet?: Maybe<Tweet>;
   /**
    * Add an unconfirmed user to the DB. This will send an email to the given address with a 6 digit code
@@ -50,6 +51,7 @@ export type Mutation = {
   login: Scalars['String'];
   root?: Maybe<Scalars['String']>;
   setAvatarImage: User;
+  undoRetweet?: Maybe<Tweet>;
 };
 
 
@@ -61,6 +63,12 @@ export type MutationAddCommentArgs = {
 
 export type MutationAddOrRemoveLikeArgs = {
   tweet: Scalars['ID'];
+};
+
+
+export type MutationAddRetweetArgs = {
+  parentID: Scalars['ID'];
+  body?: Maybe<Scalars['String']>;
 };
 
 
@@ -96,6 +104,11 @@ export type MutationLoginArgs = {
 
 export type MutationSetAvatarImageArgs = {
   file: Scalars['Upload'];
+};
+
+
+export type MutationUndoRetweetArgs = {
+  parentID: Scalars['ID'];
 };
 
 export type Query = {
@@ -134,11 +147,13 @@ export type Tweet = {
   handle: Scalars['String'];
   avatar?: Maybe<Scalars['String']>;
   date: Scalars['Date'];
-  body: Scalars['String'];
+  body?: Maybe<Scalars['String']>;
   images?: Maybe<Array<Maybe<Scalars['String']>>>;
   likeIDs: Array<Maybe<Scalars['ID']>>;
   replyingTo?: Maybe<Scalars['ID']>;
   commentIDs: Array<Maybe<Scalars['ID']>>;
+  retweetIDs: Array<Maybe<Scalars['ID']>>;
+  retweetParent?: Maybe<Scalars['ID']>;
   /** Returns all the comments on this tweet */
   comments?: Maybe<Array<Maybe<Tweet>>>;
 };
@@ -156,8 +171,15 @@ export type User = {
   avatar?: Maybe<Scalars['String']>;
   handle: Scalars['String'];
   tweetIDs: Array<Maybe<Scalars['String']>>;
+  retweetIDs: Array<Maybe<Scalars['ID']>>;
+  retweetParentIDs: Array<Maybe<Scalars['ID']>>;
   /** Gets all the tweets in user's tweet list */
   tweets?: Maybe<Array<Maybe<Tweet>>>;
+};
+
+
+export type UserTweetsArgs = {
+  getRetweets?: Maybe<Scalars['Boolean']>;
 };
 
 export type UnconfirmedUser = {
@@ -193,11 +215,13 @@ export type TweetDbObject = {
   handle: string,
   avatar?: Maybe<string>,
   date: any,
-  body: string,
+  body?: Maybe<string>,
   images?: Maybe<Array<Maybe<string>>>,
   likeIDs: Array<Maybe<string>>,
   replyingTo?: Maybe<string>,
   commentIDs: Array<Maybe<string>>,
+  retweetIDs: Array<Maybe<string>>,
+  retweetParent?: Maybe<string>,
 };
 
 export type UserDbObject = {
@@ -209,6 +233,8 @@ export type UserDbObject = {
   avatar?: Maybe<string>,
   handle: string,
   tweetIDs: Array<Maybe<string>>,
+  retweetIDs: Array<Maybe<string>>,
+  retweetParentIDs: Array<Maybe<string>>,
 };
 
 export type UnconfirmedUserDbObject = {

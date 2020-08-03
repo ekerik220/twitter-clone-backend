@@ -65,6 +65,8 @@ export const authenticationResolvers = {
         password: hashedPassword,
         handle,
         tweetIDs: [],
+        retweetIDs: [],
+        retweetParentIDs: [],
       };
 
       // try to add it to the DB

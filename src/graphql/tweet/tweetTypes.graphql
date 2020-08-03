@@ -2,6 +2,8 @@ extend type Mutation {
   addTweet(body: String!): Tweet
   addComment(replyingToID: ID!, body: String!): Tweet
   addOrRemoveLike(tweet: ID!): [ID]!
+  addRetweet(parentID: ID!, body: String): Tweet
+  undoRetweet(parentID: ID!): Tweet
 }
 
 extend type Query {
@@ -15,12 +17,13 @@ type Tweet @entity {
   handle: String! @column
   avatar: String @column
   date: Date! @column
-  body: String! @column
+  body: String @column
   images: [String] @column
   likeIDs: [ID]! @column
   replyingTo: ID @column
   commentIDs: [ID]! @column
-
+  retweetIDs: [ID]! @column
+  retweetParent: ID @column
   """
   Returns all the comments on this tweet
   """

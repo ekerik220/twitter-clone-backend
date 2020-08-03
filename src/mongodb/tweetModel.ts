@@ -23,7 +23,6 @@ const tweetSchema = new mongoose.Schema({
   },
   body: {
     type: String,
-    required: true,
   },
   images: {
     type: [String],
@@ -38,6 +37,13 @@ const tweetSchema = new mongoose.Schema({
   likeIDs: {
     type: [String],
     required: true,
+  },
+  retweetIDs: {
+    type: [String],
+    required: true,
+  },
+  retweetParent: {
+    type: String,
   },
 });
 

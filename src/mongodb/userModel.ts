@@ -36,6 +36,14 @@ const userSchema = new mongoose.Schema({
     type: [String],
     required: true,
   },
+  retweetIDs: {
+    type: [String],
+    required: true,
+  },
+  retweetParentIDs: {
+    type: [String],
+    required: true,
+  },
 });
 
 export type UserDocument = UserDbObject & mongoose.Document;

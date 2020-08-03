@@ -4,6 +4,7 @@ import {
   QueryUsernameTakenArgs,
   MutationSetAvatarImageArgs,
   User,
+  UserTweetsArgs,
 } from "../../typescript/graphql-codegen-typings";
 import cloudinary from "cloudinary";
 import { ApolloError } from "apollo-server";
@@ -70,14 +71,25 @@ export const userResolvers = {
   User: {
     tweets: async (
       parent: User,
-      args: any,
+      { getRetweets }: UserTweetsArgs,
       { models: { tweetModel } }: Context
     ) => {
+      // Get user's tweets
       const tweetIDs = parent.tweetIDs;
-      const tweets = await tweetModel.find({ _id: { $in: tweetIDs } });
+      let tweets = await tweetModel.find({ _id: { $in: tweetIDs } });
+
+      // If getRetweets flag is set, get user's retweets as well
+      if (getRetweets) {
+        const retweetIDs = parent.retweetIDs;
+        const retweets = await tweetModel.find({ _id: { $in: retweetIDs } });
+        tweets = [...tweets, ...retweets];
+      }
+
+      // Sort tweets by date
       tweets.sort(
         (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
       );
+
       return tweets;
     },
   },
