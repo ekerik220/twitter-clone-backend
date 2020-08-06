@@ -1,3 +1,5 @@
+scalar DateTime
+
 extend type Mutation {
   addTweet(body: String!): Tweet
   addComment(replyingToID: ID!, body: String!): Tweet
@@ -17,7 +19,7 @@ type Tweet @entity {
   username: String! @column
   handle: String! @column
   avatar: String @column
-  date: Date! @column
+  date: DateTime! @column
   body: String @column
   images: [String] @column
   likeIDs: [ID]! @column

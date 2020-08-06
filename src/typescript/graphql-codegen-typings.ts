@@ -7,6 +7,7 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  DateTime: any;
   EmailAddress: any;
   Timestamp: any;
   Date: any;
@@ -162,7 +163,7 @@ export type Tweet = {
   username: Scalars['String'];
   handle: Scalars['String'];
   avatar?: Maybe<Scalars['String']>;
-  date: Scalars['Date'];
+  date: Scalars['DateTime'];
   body?: Maybe<Scalars['String']>;
   images?: Maybe<Array<Maybe<Scalars['String']>>>;
   likeIDs: Array<Maybe<Scalars['ID']>>;
