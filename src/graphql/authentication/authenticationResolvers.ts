@@ -68,6 +68,7 @@ export const authenticationResolvers = {
         retweetIDs: [],
         retweetParentIDs: [],
         mentionIDs: [],
+        followingIDs: [],
       };
 
       // try to add it to the DB

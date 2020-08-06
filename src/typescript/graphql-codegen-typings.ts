@@ -45,6 +45,7 @@ export type Mutation = {
    * true so they can be added to the confirmed users list with addUser().
    */
   confirmUser: Scalars['ID'];
+  followOrUnfollow: User;
   /**
    * Take an email or username and a password. If it matches a user in the database,
    * send back a JWT with the user ID.
@@ -93,6 +94,11 @@ export type MutationAddUserArgs = {
 
 export type MutationConfirmUserArgs = {
   confirmationCode: Scalars['String'];
+  id: Scalars['ID'];
+};
+
+
+export type MutationFollowOrUnfollowArgs = {
   id: Scalars['ID'];
 };
 
@@ -193,6 +199,7 @@ export type User = {
   retweetIDs: Array<Maybe<Scalars['ID']>>;
   retweetParentIDs: Array<Maybe<Scalars['ID']>>;
   mentionIDs: Array<Maybe<Scalars['ID']>>;
+  followingIDs: Array<Maybe<Scalars['ID']>>;
   /** Gets all the tweets in user's tweet list */
   tweets?: Maybe<Array<Maybe<Tweet>>>;
 };
@@ -263,6 +270,7 @@ export type UserDbObject = {
   retweetIDs: Array<Maybe<string>>,
   retweetParentIDs: Array<Maybe<string>>,
   mentionIDs: Array<Maybe<string>>,
+  followingIDs: Array<Maybe<string>>,
 };
 
 export type UnconfirmedUserDbObject = {

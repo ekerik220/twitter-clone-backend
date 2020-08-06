@@ -27,6 +27,7 @@ extend type Query {
 
 extend type Mutation {
   setAvatarImage(file: Upload!): User!
+  followOrUnfollow(id: ID!): User!
 }
 
 type User @entity {
@@ -41,6 +42,7 @@ type User @entity {
   retweetIDs: [ID]! @column
   retweetParentIDs: [ID]! @column
   mentionIDs: [ID]! @column
+  followingIDs: [ID]! @column
   """
   Gets all the tweets in user's tweet list
   """

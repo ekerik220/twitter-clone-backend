@@ -5,13 +5,15 @@ import {
   MutationSetAvatarImageArgs,
   User,
   UserTweetsArgs,
+  MutationFollowOrUnfollowArgs,
 } from "../../typescript/graphql-codegen-typings";
 import cloudinary from "cloudinary";
 import { ApolloError } from "apollo-server";
-import { DOCUMENT_NOT_FOUND } from "../../utils/errorCodes";
+import { DOCUMENT_NOT_FOUND, NOT_AUTHENICATED } from "../../utils/errorCodes";
 import Tweet from "../../mongodb/tweetModel";
 import { UserDocument } from "../../mongodb/userModel";
 import mongoose from "mongoose";
+import { floor } from "lodash";
 
 export const userResolvers = {
   Query: {
@@ -58,9 +60,20 @@ export const userResolvers = {
     ) => {
       const userDoc = await userModel.findById(user);
 
+      const followingIDs = userDoc?.followingIDs.map((id) =>
+        mongoose.Types.ObjectId(id as string)
+      );
+
       // Gets 3 user documents that don't have the same ID as the logged in user
       const random = await userModel.aggregate<UserDocument>([
-        { $match: { _id: { $ne: mongoose.Types.ObjectId(user) } } },
+        {
+          $match: {
+            $and: [
+              { _id: { $ne: mongoose.Types.ObjectId(user) } },
+              { _id: { $nin: followingIDs } },
+            ],
+          },
+        },
         { $sample: { size: 3 } },
       ]);
 
@@ -91,6 +104,32 @@ export const userResolvers = {
       const saved = await self.save();
 
       return saved;
+    },
+    followOrUnfollow: async (
+      parent: any,
+      { id }: MutationFollowOrUnfollowArgs,
+      { models: { userModel }, user }: Context
+    ) => {
+      const userDoc = await userModel.findById(user);
+      if (!userDoc)
+        throw new ApolloError(
+          "Must be signed in to follow somone.",
+          NOT_AUTHENICATED
+        );
+
+      // If already following this id, remove from followingIDs (unfollow)
+      if (userDoc.followingIDs.includes(id)) {
+        const deleteIndex = userDoc.followingIDs.indexOf(id);
+        userDoc.followingIDs.splice(deleteIndex, 1);
+      }
+      // else, add to followingIDs (follow)
+      else {
+        userDoc.followingIDs.push(id);
+      }
+
+      const savedUser = await userDoc.save();
+
+      return savedUser;
     },
   },
   User: {

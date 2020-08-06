@@ -48,6 +48,10 @@ const userSchema = new mongoose.Schema({
     type: [String],
     required: true,
   },
+  followingIDs: {
+    type: [String],
+    required: true,
+  },
 });
 
 export type UserDocument = UserDbObject & mongoose.Document;
