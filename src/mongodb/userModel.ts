@@ -44,6 +44,10 @@ const userSchema = new mongoose.Schema({
     type: [String],
     required: true,
   },
+  mentionIDs: {
+    type: [String],
+    required: true,
+  },
 });
 
 export type UserDocument = UserDbObject & mongoose.Document;

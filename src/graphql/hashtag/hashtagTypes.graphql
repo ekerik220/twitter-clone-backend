@@ -1,0 +1,10 @@
+extend type Query {
+  trending: [Hashtag]!
+}
+
+type Hashtag @entity {
+  id: ID @id
+  hashtag: String! @column
+  tweetIDs: [String]! @column
+  numOfTweets: Int! @column
+}

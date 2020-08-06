@@ -116,8 +116,10 @@ export type Query = {
   /** Checks if a user exists with given email. */
   emailTaken: Scalars['Boolean'];
   root?: Maybe<Scalars['String']>;
+  search?: Maybe<Array<Maybe<Tweet>>>;
   /** Gets the currently logged in user */
   self: User;
+  trending: Array<Maybe<Hashtag>>;
   tweet: Tweet;
   /** Checks if a user with given username exists. */
   usernameTaken: Scalars['Boolean'];
@@ -130,6 +132,11 @@ export type QueryEmailTakenArgs = {
 };
 
 
+export type QuerySearchArgs = {
+  term: Scalars['String'];
+};
+
+
 export type QueryTweetArgs = {
   id: Scalars['ID'];
 };
@@ -138,6 +145,15 @@ export type QueryTweetArgs = {
 export type QueryUsernameTakenArgs = {
   username: Scalars['String'];
 };
+
+export type Hashtag = {
+  __typename?: 'Hashtag';
+  id?: Maybe<Scalars['ID']>;
+  hashtag: Scalars['String'];
+  tweetIDs: Array<Maybe<Scalars['String']>>;
+  numOfTweets: Scalars['Int'];
+};
+
 
 export type Tweet = {
   __typename?: 'Tweet';
@@ -173,6 +189,7 @@ export type User = {
   tweetIDs: Array<Maybe<Scalars['String']>>;
   retweetIDs: Array<Maybe<Scalars['ID']>>;
   retweetParentIDs: Array<Maybe<Scalars['ID']>>;
+  mentionIDs: Array<Maybe<Scalars['ID']>>;
   /** Gets all the tweets in user's tweet list */
   tweets?: Maybe<Array<Maybe<Tweet>>>;
 };
@@ -208,6 +225,13 @@ export type AdditionalEntityFields = {
 };
 
 import { ObjectID } from 'mongodb';
+export type HashtagDbObject = {
+  _id?: Maybe<ObjectID>,
+  hashtag: string,
+  tweetIDs: Array<Maybe<string>>,
+  numOfTweets: number,
+};
+
 export type TweetDbObject = {
   _id?: Maybe<ObjectID>,
   userID: string,
@@ -235,6 +259,7 @@ export type UserDbObject = {
   tweetIDs: Array<Maybe<string>>,
   retweetIDs: Array<Maybe<string>>,
   retweetParentIDs: Array<Maybe<string>>,
+  mentionIDs: Array<Maybe<string>>,
 };
 
 export type UnconfirmedUserDbObject = {

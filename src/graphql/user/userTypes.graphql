@@ -35,6 +35,7 @@ type User @entity {
   tweetIDs: [String]! @column
   retweetIDs: [ID]! @column
   retweetParentIDs: [ID]! @column
+  mentionIDs: [ID]! @column
   """
   Gets all the tweets in user's tweet list
   """

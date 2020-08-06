@@ -6,17 +6,20 @@ import {
   MutationAddCommentArgs,
   MutationAddRetweetArgs,
   MutationUndoRetweetArgs,
+  Hashtag,
+  QuerySearchArgs,
 } from "../../typescript/graphql-codegen-typings";
 import { Context } from "../../main";
 import { ApolloError } from "apollo-server";
 import { NOT_AUTHENICATED, DOCUMENT_NOT_FOUND } from "../../utils/errorCodes";
+import _ from "lodash";
 
 export const tweetResolvers = {
   Mutation: {
     addTweet: async (
       parent: any,
       { body }: MutationAddTweetArgs,
-      { models: { userModel, tweetModel }, user }: Context
+      { models: { userModel, tweetModel, hashtagModel }, user }: Context
     ) => {
       // Check that we're logged in
       if (!user)
@@ -52,6 +55,35 @@ export const tweetResolvers = {
       // Add the id of the tweet to front of user's list of tweets
       userDoc.tweetIDs.unshift(savedTweet._id);
       userDoc.save();
+
+      // Parse any hashtags and mentions
+      const hashtags = _.uniq(body.match(/\B#\w\w+/g));
+      const mentions = _.uniq(body.match(/\B@\w\w+/g));
+
+      // Add each hashtag to the hashtag DB
+      hashtags.forEach(async (hashtag) => {
+        const hashtagDoc = await hashtagModel.findOneAndUpdate(
+          { hashtag },
+          { $push: { tweetIDs: savedTweet.id }, $inc: { numOfTweets: 1 } }
+        );
+        if (!hashtagDoc) {
+          // if it didn't exist, create a new document for this hashtag
+          const newHashtagDoc: Hashtag = {
+            hashtag,
+            tweetIDs: [savedTweet.id],
+            numOfTweets: 1,
+          };
+          hashtagModel.create(newHashtagDoc);
+        }
+      });
+
+      // Add each user mention to the proper user document's mentions list
+      mentions.forEach(async (handle) => {
+        const userDoc = await userModel.findOneAndUpdate(
+          { handle: handle.slice(1) },
+          { $push: { mentionIDs: savedTweet.id } }
+        );
+      });
 
       return savedTweet;
     },
@@ -259,6 +291,23 @@ export const tweetResolvers = {
 
       // return the tweet
       return tweet;
+    },
+    search: async (
+      parent: any,
+      { term }: QuerySearchArgs,
+      { models: { tweetModel } }: Context
+    ) => {
+      // Get tweets that contain the search term in the body, and are
+      // first class tweets (not comments or retweets).
+      const results = await tweetModel.find({
+        body: {
+          $regex: `\\b${term}\\b|\\B${term}|\\B${term}`,
+          $options: "i",
+        },
+        replyingTo: null,
+        retweetParent: null,
+      });
+      return results;
     },
   },
   Tweet: {
