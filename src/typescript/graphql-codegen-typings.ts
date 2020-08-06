@@ -125,6 +125,8 @@ export type Query = {
   /** Checks if a user with given username exists. */
   usernameTaken: Scalars['Boolean'];
   users: Array<Maybe<User>>;
+  /** Returns three random user's to be used for follow suggestions */
+  whoToFollow: Array<Maybe<User>>;
 };
 
 

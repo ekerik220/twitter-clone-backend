@@ -18,6 +18,11 @@ extend type Query {
   Checks if a user with given username exists.
   """
   usernameTaken(username: String!): Boolean!
+
+  """
+  Returns three random user's to be used for follow suggestions
+  """
+  whoToFollow: [User]!
 }
 
 extend type Mutation {

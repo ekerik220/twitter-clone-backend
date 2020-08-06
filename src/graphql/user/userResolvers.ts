@@ -10,6 +10,8 @@ import cloudinary from "cloudinary";
 import { ApolloError } from "apollo-server";
 import { DOCUMENT_NOT_FOUND } from "../../utils/errorCodes";
 import Tweet from "../../mongodb/tweetModel";
+import { UserDocument } from "../../mongodb/userModel";
+import mongoose from "mongoose";
 
 export const userResolvers = {
   Query: {
@@ -48,6 +50,29 @@ export const userResolvers = {
     ) => {
       const exists = await userModel.exists({ username });
       return exists;
+    },
+    whoToFollow: async (
+      parent: any,
+      args: any,
+      { models: { userModel }, user }: Context
+    ) => {
+      const userDoc = await userModel.findById(user);
+
+      // Gets 3 user documents that don't have the same ID as the logged in user
+      const random = await userModel.aggregate<UserDocument>([
+        { $match: { _id: { $ne: mongoose.Types.ObjectId(user) } } },
+        { $sample: { size: 3 } },
+      ]);
+
+      // I'm probably doing something wrong, but the user documents returned from aggregate above
+      // don't allow querying on 'id'... I couldn't figure it out so I just grabbed the _id fields
+      // from the documents and did a regular 'find' operation to get the *same* list of documents,
+      // but these ones allow querying on id...
+      const ids: string[] = [];
+      random.forEach((user) => ids.push(user._id.toString()));
+      const randomDocs = await userModel.find({ _id: { $in: ids } });
+
+      return randomDocs;
     },
   },
   Mutation: {
