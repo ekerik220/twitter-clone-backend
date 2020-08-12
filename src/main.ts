@@ -10,6 +10,7 @@ import unconfirmedUserModel, {
 import tweetModel, { TweetDocument } from "./mongodb/tweetModel";
 import { getUser } from "./utils/auth";
 import hashtagModel, { HashtagDocument } from "./mongodb/hashtagModel";
+import listModel, { ListDocument } from "./mongodb/listModel";
 
 export interface Context {
   models: {
@@ -17,6 +18,7 @@ export interface Context {
     unconfirmedUserModel: mongoose.Model<UnconfirmedUserDocument, {}>;
     tweetModel: mongoose.Model<TweetDocument, {}>;
     hashtagModel: mongoose.Model<HashtagDocument, {}>;
+    listModel: mongoose.Model<ListDocument, {}>;
   };
   user: string | undefined;
 }
@@ -33,6 +35,7 @@ const server = new ApolloServer({
       unconfirmedUserModel,
       tweetModel,
       hashtagModel,
+      listModel,
     },
     user: req.headers.authorization
       ? getUser(req.headers.authorization)

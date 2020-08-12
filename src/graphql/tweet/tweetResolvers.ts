@@ -8,6 +8,7 @@ import {
   MutationUndoRetweetArgs,
   Hashtag,
   QuerySearchArgs,
+  Notification,
 } from "../../typescript/graphql-codegen-typings";
 import { Context } from "../../main";
 import { ApolloError } from "apollo-server";
@@ -79,10 +80,25 @@ export const tweetResolvers = {
 
       // Add each user mention to the proper user document's mentions list
       mentions.forEach(async (handle) => {
-        const userDoc = await userModel.findOneAndUpdate(
+        await userModel.findOneAndUpdate(
           { handle: handle.slice(1) },
           { $push: { mentionIDs: savedTweet.id } }
         );
+      });
+
+      // Create notification object
+      const notification: Notification = {
+        type: "tweet",
+        user: userDoc,
+        tweet: savedTweet,
+        notifierID: userDoc.id,
+      };
+
+      // Add a notification to all follower's notifications list (front of list)
+      userDoc.followedByIDs.forEach(async (id) => {
+        await userModel.findByIdAndUpdate(id, {
+          $push: { notifications: { $each: [notification], $position: 0 } },
+        });
       });
 
       return savedTweet;

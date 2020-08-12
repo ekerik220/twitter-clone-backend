@@ -52,6 +52,22 @@ const userSchema = new mongoose.Schema({
     type: [String],
     required: true,
   },
+  followedByIDs: {
+    type: [String],
+    required: true,
+  },
+  bookmarkIDs: {
+    type: [String],
+    required: true,
+  },
+  notifications: {
+    type: [Object],
+    required: true,
+  },
+  listIDs: {
+    type: [String],
+    required: true,
+  },
 });
 
 export type UserDocument = UserDbObject & mongoose.Document;

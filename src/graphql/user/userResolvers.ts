@@ -6,14 +6,15 @@ import {
   User,
   UserTweetsArgs,
   MutationFollowOrUnfollowArgs,
+  MutationAddOrRemoveBookmarkArgs,
+  Notification,
+  QuerySearchUsersArgs,
 } from "../../typescript/graphql-codegen-typings";
 import cloudinary from "cloudinary";
 import { ApolloError } from "apollo-server";
 import { DOCUMENT_NOT_FOUND, NOT_AUTHENICATED } from "../../utils/errorCodes";
-import Tweet from "../../mongodb/tweetModel";
 import { UserDocument } from "../../mongodb/userModel";
 import mongoose from "mongoose";
-import { floor } from "lodash";
 
 export const userResolvers = {
   Query: {
@@ -87,6 +88,20 @@ export const userResolvers = {
 
       return randomDocs;
     },
+    searchUsers: async (
+      parent: any,
+      { term }: QuerySearchUsersArgs,
+      { models: { userModel } }: Context
+    ) => {
+      const users = await userModel.find({
+        $or: [
+          { username: { $regex: `.*${term}.*`, $options: "i" } },
+          { handle: { $regex: `.*${term}.*`, $options: "i" } },
+        ],
+      });
+
+      return users;
+    },
   },
   Mutation: {
     setAvatarImage: async (
@@ -110,21 +125,85 @@ export const userResolvers = {
       { id }: MutationFollowOrUnfollowArgs,
       { models: { userModel }, user }: Context
     ) => {
-      const userDoc = await userModel.findById(user);
+      // Get the logged in user
+      let userDoc = await userModel.findById(user);
       if (!userDoc)
         throw new ApolloError(
           "Must be signed in to follow somone.",
           NOT_AUTHENICATED
         );
 
-      // If already following this id, remove from followingIDs (unfollow)
+      // If already following this id, perform unfollow tasks...
       if (userDoc.followingIDs.includes(id)) {
-        const deleteIndex = userDoc.followingIDs.indexOf(id);
-        userDoc.followingIDs.splice(deleteIndex, 1);
+        // Followed user: remove our ID from their followedBy list, and remove the notification
+        // that we followed them from their notifications.
+        await userModel.findByIdAndUpdate(id, {
+          $pull: {
+            followedByIDs: userDoc.id,
+            notifications: { notifierID: userDoc.id, type: "follow" },
+          },
+        });
+
+        // Current user: remove all notifications from the user we unfollowed, and remove
+        // their ID from our followingIDs list.
+        userDoc = await userModel.findByIdAndUpdate(
+          user,
+          {
+            $pull: { notifications: { notifierID: id }, followingIDs: id },
+          },
+          { new: true }
+        );
+      }
+      // perform follow tasks...
+      else {
+        // make a notification object
+        const notification: Notification = {
+          type: "follow",
+          user: userDoc,
+          notifierID: userDoc.id,
+        };
+
+        // add notification to followed user saying that we followed them, and add ourselves
+        // to their followedBy list
+        await userModel.findByIdAndUpdate(id, {
+          $push: {
+            notifications: { $each: [notification], $position: 0 },
+            followedByIDs: userDoc.id,
+          },
+        });
+
+        // add follow target's ID to our followingIDs list
+        userDoc = await userModel.findByIdAndUpdate(
+          user,
+          {
+            $push: { followingIDs: id },
+          },
+          { new: true }
+        );
+      }
+
+      return userDoc;
+    },
+    addOrRemoveBookmark: async (
+      parent: any,
+      { tweetID }: MutationAddOrRemoveBookmarkArgs,
+      { models: { userModel }, user }: Context
+    ) => {
+      const userDoc = await userModel.findById(user);
+      if (!userDoc)
+        throw new ApolloError(
+          "Must be signed in to add a bookmark.",
+          NOT_AUTHENICATED
+        );
+
+      // If already following this id, remove from followingIDs (unfollow)
+      if (userDoc.bookmarkIDs.includes(tweetID)) {
+        const deleteIndex = userDoc.bookmarkIDs.indexOf(tweetID);
+        userDoc.bookmarkIDs.splice(deleteIndex, 1);
       }
       // else, add to followingIDs (follow)
       else {
-        userDoc.followingIDs.push(id);
+        userDoc.bookmarkIDs.push(tweetID);
       }
 
       const savedUser = await userDoc.save();
@@ -155,6 +234,46 @@ export const userResolvers = {
       );
 
       return tweets;
+    },
+    bookmarks: async (
+      parent: User,
+      args: any,
+      { models: { tweetModel } }: Context
+    ) => {
+      // Get bookmarked tweets
+      const bookmarkedTweets = tweetModel.find({
+        _id: { $in: parent.bookmarkIDs },
+      });
+
+      return bookmarkedTweets;
+    },
+    mentions: async (
+      parent: User,
+      args: any,
+      { models: { tweetModel } }: Context
+    ) => {
+      // Get tweets the user was mentioned in
+      const mentionedTweets = await tweetModel.find({
+        _id: { $in: parent.mentionIDs },
+      });
+
+      return mentionedTweets;
+    },
+    lists: async (
+      parent: User,
+      args: any,
+      { models: { listModel } }: Context
+    ) => {
+      // Get all the lists from user's listID array
+      const lists = await listModel.find({ _id: { $in: parent.listIDs } });
+
+      // Sort the lists by their created date
+      lists.sort(
+        (a, b) =>
+          new Date(b.createdDate).getTime() - new Date(a.createdDate).getTime()
+      );
+
+      return lists;
     },
   },
 };

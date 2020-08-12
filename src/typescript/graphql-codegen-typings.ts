@@ -25,6 +25,8 @@ export type Scalars = {
 export type Mutation = {
   __typename?: 'Mutation';
   addComment?: Maybe<Tweet>;
+  addList: List;
+  addOrRemoveBookmark: User;
   addOrRemoveLike: Array<Maybe<Scalars['ID']>>;
   addRetweet?: Maybe<Tweet>;
   addTweet?: Maybe<Tweet>;
@@ -39,12 +41,14 @@ export type Mutation = {
    * had it's confirmed field set to true (email has been confirmed), as well as a password.
    */
   addUser: Scalars['ID'];
+  addUserToList: User;
   /**
    * Take a 6 digit code (this was sent to the user by email), and the user's email address and
    * check that these match up in the DB. If they do, this will set their 'confirmed' field to
    * true so they can be added to the confirmed users list with addUser().
    */
   confirmUser: Scalars['ID'];
+  deleteList: List;
   followOrUnfollow: User;
   /**
    * Take an email or username and a password. If it matches a user in the database,
@@ -54,12 +58,25 @@ export type Mutation = {
   root?: Maybe<Scalars['String']>;
   setAvatarImage: User;
   undoRetweet?: Maybe<Tweet>;
+  updateList: List;
 };
 
 
 export type MutationAddCommentArgs = {
   replyingToID: Scalars['ID'];
   body: Scalars['String'];
+};
+
+
+export type MutationAddListArgs = {
+  name: Scalars['String'];
+  description?: Maybe<Scalars['String']>;
+  img?: Maybe<Scalars['String']>;
+};
+
+
+export type MutationAddOrRemoveBookmarkArgs = {
+  tweetID: Scalars['ID'];
 };
 
 
@@ -92,9 +109,20 @@ export type MutationAddUserArgs = {
 };
 
 
+export type MutationAddUserToListArgs = {
+  userID: Scalars['ID'];
+  listID: Scalars['ID'];
+};
+
+
 export type MutationConfirmUserArgs = {
   confirmationCode: Scalars['String'];
   id: Scalars['ID'];
+};
+
+
+export type MutationDeleteListArgs = {
+  listID: Scalars['ID'];
 };
 
 
@@ -118,12 +146,26 @@ export type MutationUndoRetweetArgs = {
   parentID: Scalars['ID'];
 };
 
+
+export type MutationUpdateListArgs = {
+  listID: Scalars['ID'];
+  name: Scalars['String'];
+  description?: Maybe<Scalars['String']>;
+  img?: Maybe<Scalars['String']>;
+};
+
 export type Query = {
   __typename?: 'Query';
   /** Checks if a user exists with given email. */
   emailTaken: Scalars['Boolean'];
+  getList?: Maybe<List>;
   root?: Maybe<Scalars['String']>;
   search?: Maybe<Array<Maybe<Tweet>>>;
+  /**
+   * Returns all user's with the given substring somewhere in their username
+   * or handle.
+   */
+  searchUsers: Array<Maybe<User>>;
   /** Gets the currently logged in user */
   self: User;
   trending: Array<Maybe<Hashtag>>;
@@ -141,7 +183,17 @@ export type QueryEmailTakenArgs = {
 };
 
 
+export type QueryGetListArgs = {
+  id?: Maybe<Scalars['ID']>;
+};
+
+
 export type QuerySearchArgs = {
+  term: Scalars['String'];
+};
+
+
+export type QuerySearchUsersArgs = {
   term: Scalars['String'];
 };
 
@@ -161,6 +213,17 @@ export type Hashtag = {
   hashtag: Scalars['String'];
   tweetIDs: Array<Maybe<Scalars['String']>>;
   numOfTweets: Scalars['Int'];
+};
+
+export type List = {
+  __typename?: 'List';
+  id?: Maybe<Scalars['ID']>;
+  name: Scalars['String'];
+  description?: Maybe<Scalars['String']>;
+  img?: Maybe<Scalars['String']>;
+  userIDs: Array<Maybe<Scalars['String']>>;
+  createdDate: Scalars['DateTime'];
+  users?: Maybe<Array<Maybe<User>>>;
 };
 
 
@@ -189,6 +252,7 @@ export type Tweet = {
 export type User = {
   __typename?: 'User';
   id?: Maybe<Scalars['ID']>;
+  _id?: Maybe<Scalars['ID']>;
   email: Scalars['EmailAddress'];
   username: Scalars['String'];
   birthdate: Scalars['Date'];
@@ -200,8 +264,18 @@ export type User = {
   retweetParentIDs: Array<Maybe<Scalars['ID']>>;
   mentionIDs: Array<Maybe<Scalars['ID']>>;
   followingIDs: Array<Maybe<Scalars['ID']>>;
+  followedByIDs: Array<Maybe<Scalars['ID']>>;
+  bookmarkIDs: Array<Maybe<Scalars['ID']>>;
+  notifications: Array<Maybe<Notification>>;
+  listIDs: Array<Maybe<Scalars['ID']>>;
   /** Gets all the tweets in user's tweet list */
   tweets?: Maybe<Array<Maybe<Tweet>>>;
+  /** Gets all the user's bookmarked tweets */
+  bookmarks?: Maybe<Array<Maybe<Tweet>>>;
+  /** Gets all the tweets the user was mentioned in */
+  mentions?: Maybe<Array<Maybe<Tweet>>>;
+  /** Gets all the lists the user has */
+  lists?: Maybe<Array<Maybe<List>>>;
 };
 
 
@@ -228,6 +302,14 @@ export type UploadFileResponse = {
   url: Scalars['String'];
 };
 
+export type Notification = {
+  __typename?: 'Notification';
+  type: Scalars['String'];
+  user: User;
+  tweet?: Maybe<Tweet>;
+  notifierID: Scalars['ID'];
+};
+
 
 export type AdditionalEntityFields = {
   path?: Maybe<Scalars['String']>;
@@ -240,6 +322,15 @@ export type HashtagDbObject = {
   hashtag: string,
   tweetIDs: Array<Maybe<string>>,
   numOfTweets: number,
+};
+
+export type ListDbObject = {
+  _id?: Maybe<ObjectID>,
+  name: string,
+  description?: Maybe<string>,
+  img?: Maybe<string>,
+  userIDs: Array<Maybe<string>>,
+  createdDate: any,
 };
 
 export type TweetDbObject = {
@@ -271,6 +362,10 @@ export type UserDbObject = {
   retweetParentIDs: Array<Maybe<string>>,
   mentionIDs: Array<Maybe<string>>,
   followingIDs: Array<Maybe<string>>,
+  followedByIDs: Array<Maybe<string>>,
+  bookmarkIDs: Array<Maybe<string>>,
+  notifications: Array<Maybe<Notification>>,
+  listIDs: Array<Maybe<string>>,
 };
 
 export type UnconfirmedUserDbObject = {

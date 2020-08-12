@@ -1,0 +1,26 @@
+extend type Query {
+  getList(id: ID): List
+}
+
+extend type Mutation {
+  addList(name: String!, description: String, img: String): List!
+  addUserToList(userID: ID!, listID: ID!): User!
+  updateList(
+    listID: ID!
+    name: String!
+    description: String
+    img: String
+  ): List!
+  deleteList(listID: ID!): List!
+}
+
+type List @entity {
+  id: ID @id
+  name: String! @column
+  description: String @column
+  img: String @column
+  userIDs: [String]! @column
+  createdDate: DateTime! @column
+
+  users: [User]
+}

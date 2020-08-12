@@ -23,15 +23,23 @@ extend type Query {
   Returns three random user's to be used for follow suggestions
   """
   whoToFollow: [User]!
+
+  """
+  Returns all user's with the given substring somewhere in their username
+  or handle.
+  """
+  searchUsers(term: String!): [User]!
 }
 
 extend type Mutation {
   setAvatarImage(file: Upload!): User!
   followOrUnfollow(id: ID!): User!
+  addOrRemoveBookmark(tweetID: ID!): User!
 }
 
 type User @entity {
   id: ID @id
+  _id: ID
   email: EmailAddress! @column
   username: String! @column
   birthdate: Date! @column
@@ -43,10 +51,29 @@ type User @entity {
   retweetParentIDs: [ID]! @column
   mentionIDs: [ID]! @column
   followingIDs: [ID]! @column
+  followedByIDs: [ID]! @column
+  bookmarkIDs: [ID]! @column
+  notifications: [Notification]! @column
+  listIDs: [ID]! @column
   """
   Gets all the tweets in user's tweet list
   """
   tweets(getRetweets: Boolean): [Tweet]
+
+  """
+  Gets all the user's bookmarked tweets
+  """
+  bookmarks: [Tweet]
+
+  """
+  Gets all the tweets the user was mentioned in
+  """
+  mentions: [Tweet]
+
+  """
+  Gets all the lists the user has
+  """
+  lists: [List]
 }
 
 type UnconfirmedUser @entity {
@@ -64,4 +91,11 @@ type UploadFileResponse {
   mimetype: String!
   encoding: String!
   url: String!
+}
+
+type Notification {
+  type: String!
+  user: User!
+  tweet: Tweet
+  notifierID: ID!
 }
