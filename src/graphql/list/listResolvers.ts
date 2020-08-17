@@ -9,6 +9,7 @@ import {
 import { Context } from "../../main";
 import { ApolloError } from "apollo-server";
 import { NOT_AUTHENICATED } from "../../utils/errorCodes";
+import { processUpload } from "../../utils/processUpload";
 
 export const listResolvers = {
   Query: {
@@ -34,11 +35,13 @@ export const listResolvers = {
           NOT_AUTHENICATED
         );
 
+      const uploadUrl = await processUpload(img);
+
       // create a list object
       const list: List = {
         name,
         description,
-        img,
+        img: uploadUrl,
         userIDs: [],
         createdDate: new Date(),
       };
@@ -82,12 +85,14 @@ export const listResolvers = {
       { listID, name, description, img }: MutationUpdateListArgs,
       { models: { listModel } }: Context
     ) => {
+      const uploadURL = await processUpload(img);
+
       const updatedList = await listModel.findByIdAndUpdate(
         listID,
         {
           name,
           description,
-          img,
+          img: uploadURL,
         },
         { new: true }
       );

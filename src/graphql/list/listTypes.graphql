@@ -3,13 +3,13 @@ extend type Query {
 }
 
 extend type Mutation {
-  addList(name: String!, description: String, img: String): List!
+  addList(name: String!, description: String, img: Upload): List!
   addUserToList(userID: ID!, listID: ID!): User!
   updateList(
     listID: ID!
     name: String!
     description: String
-    img: String
+    img: Upload
   ): List!
   deleteList(listID: ID!): List!
 }
