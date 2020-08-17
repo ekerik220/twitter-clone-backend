@@ -73,7 +73,7 @@ type User @entity {
   """
   Gets all the tweets in user's tweet list
   """
-  tweets(getRetweets: Boolean): [Tweet]
+  tweets: [Tweet]
 
   """
   Gets all the user's bookmarked tweets

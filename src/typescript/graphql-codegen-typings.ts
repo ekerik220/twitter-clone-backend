@@ -300,11 +300,6 @@ export type User = {
   likedTweets?: Maybe<Array<Maybe<Tweet>>>;
 };
 
-
-export type UserTweetsArgs = {
-  getRetweets?: Maybe<Scalars['Boolean']>;
-};
-
 export type UnconfirmedUser = {
   __typename?: 'UnconfirmedUser';
   id?: Maybe<Scalars['ID']>;

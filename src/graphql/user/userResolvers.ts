@@ -256,19 +256,17 @@ export const userResolvers = {
   User: {
     tweets: async (
       parent: User,
-      { getRetweets }: UserTweetsArgs,
+      args: any,
       { models: { tweetModel } }: Context
     ) => {
       // Get user's tweets
       const tweetIDs = parent.tweetIDs;
       let tweets = await tweetModel.find({ _id: { $in: tweetIDs } });
 
-      // If getRetweets flag is set, get user's retweets as well
-      if (getRetweets) {
-        const retweetIDs = parent.retweetIDs;
-        const retweets = await tweetModel.find({ _id: { $in: retweetIDs } });
-        tweets = [...tweets, ...retweets];
-      }
+      // get user's retweets as well
+      const retweetIDs = parent.retweetIDs;
+      const retweets = await tweetModel.find({ _id: { $in: retweetIDs } });
+      tweets = [...tweets, ...retweets];
 
       // Sort tweets by date
       tweets.sort(
