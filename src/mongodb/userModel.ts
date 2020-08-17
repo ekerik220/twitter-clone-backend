@@ -68,6 +68,12 @@ const userSchema = new mongoose.Schema({
     type: [String],
     required: true,
   },
+  likedTweetIDs: {
+    type: [String],
+    required: true,
+  },
+  bio: String,
+  profileImg: String,
 });
 
 export type UserDocument = UserDbObject & mongoose.Document;

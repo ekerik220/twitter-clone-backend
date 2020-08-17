@@ -73,6 +73,7 @@ export const authenticationResolvers = {
         bookmarkIDs: [],
         notifications: [],
         listIDs: [],
+        likedTweetIDs: [],
       };
 
       // try to add it to the DB

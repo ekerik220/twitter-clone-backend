@@ -55,6 +55,8 @@ type User @entity {
   bookmarkIDs: [ID]! @column
   notifications: [Notification]! @column
   listIDs: [ID]! @column
+  likedTweetIDs: [ID]! @column
+  bio: String @column
   """
   Gets all the tweets in user's tweet list
   """
@@ -74,6 +76,10 @@ type User @entity {
   Gets all the lists the user has
   """
   lists: [List]
+  """
+  Gets all the user's liked tweets
+  """
+  likedTweets: [Tweet]
 }
 
 type UnconfirmedUser @entity {

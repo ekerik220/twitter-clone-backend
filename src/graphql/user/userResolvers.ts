@@ -275,35 +275,25 @@ export const userResolvers = {
 
       return lists;
     },
-  },
-};
-
-const processUpload = async (upload: any) => {
-  const { stream } = await upload;
-
-  let resultUrl = "";
-  const cloudinaryUpload = async (stream: any) => {
-    try {
-      await new Promise((resolve, reject) => {
-        const streamLoad = cloudinary.v2.uploader.upload_stream(function (
-          error,
-          result
-        ) {
-          if (result) {
-            resultUrl = result.secure_url;
-            resolve(resultUrl);
-          } else {
-            reject(error);
-          }
+    likedTweets: async (
+      parent: User,
+      args: any,
+      { models: { tweetModel } }: Context
+    ) => {
+      // Get all the tweets from user's likedTweetIDs
+      const likedTweets = await tweetModel.find({
+        _id: { $in: parent.likedTweetIDs },
         });
 
-        stream.pipe(streamLoad);
-      });
-    } catch (err) {
-      throw new Error(`Failed to upload picture ! Err:${err.message}`);
-    }
-  };
+      // Sort the tweets by their date
+      likedTweets.sort(
+        (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+      );
 
-  await cloudinaryUpload(stream);
-  return resultUrl;
+      return likedTweets;
+    },
+    joinDate: (parent: User) => {
+      return new mongoose.Types.ObjectId(parent.id as string).getTimestamp();
+    },
+  },
 };

@@ -171,8 +171,19 @@ export const tweetResolvers = {
 
       // If user ID exists in likes, remove it
       const index = tweetDoc.likeIDs.indexOf(user);
-      if (index > -1) tweetDoc.likeIDs.splice(index, 1);
-      else tweetDoc.likeIDs.push(user);
+      if (index > -1) {
+        tweetDoc.likeIDs.splice(index, 1);
+        await userModel.findByIdAndUpdate(user, {
+          $pull: { likedTweetIDs: tweet },
+        });
+      }
+      // else, add it
+      else {
+        tweetDoc.likeIDs.push(user);
+        await userModel.findByIdAndUpdate(user, {
+          $push: { likedTweetIDs: tweet },
+        });
+      }
 
       // Save changes
       const savedDoc = await tweetDoc.save();
