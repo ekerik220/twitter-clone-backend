@@ -15,6 +15,7 @@ import { ApolloError } from "apollo-server";
 import { DOCUMENT_NOT_FOUND, NOT_AUTHENICATED } from "../../utils/errorCodes";
 import { UserDocument } from "../../mongodb/userModel";
 import mongoose from "mongoose";
+import { processUpload } from "../../utils/processUpload";
 
 export const userResolvers = {
   Query: {
