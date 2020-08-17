@@ -4,7 +4,6 @@ import {
   QueryUsernameTakenArgs,
   MutationSetAvatarImageArgs,
   User,
-  UserTweetsArgs,
   MutationFollowOrUnfollowArgs,
   MutationAddOrRemoveBookmarkArgs,
   Notification,
