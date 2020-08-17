@@ -40,6 +40,12 @@ extend type Mutation {
   setAvatarImage(file: Upload!): User!
   followOrUnfollow(id: ID!): User!
   addOrRemoveBookmark(tweetID: ID!): User!
+  updateProfile(
+    username: String!
+    bio: String
+    avatar: Upload
+    profileImg: Upload
+  ): User!
 }
 
 type User @entity {
@@ -62,6 +68,8 @@ type User @entity {
   listIDs: [ID]! @column
   likedTweetIDs: [ID]! @column
   bio: String @column
+  profileImg: String @column
+  joinDate: Date
   """
   Gets all the tweets in user's tweet list
   """
@@ -81,6 +89,7 @@ type User @entity {
   Gets all the lists the user has
   """
   lists: [List]
+
   """
   Gets all the user's liked tweets
   """

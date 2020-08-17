@@ -59,6 +59,7 @@ export type Mutation = {
   setAvatarImage: User;
   undoRetweet?: Maybe<Tweet>;
   updateList: List;
+  updateProfile: User;
 };
 
 
@@ -71,7 +72,7 @@ export type MutationAddCommentArgs = {
 export type MutationAddListArgs = {
   name: Scalars['String'];
   description?: Maybe<Scalars['String']>;
-  img?: Maybe<Scalars['String']>;
+  img?: Maybe<Scalars['Upload']>;
 };
 
 
@@ -151,7 +152,15 @@ export type MutationUpdateListArgs = {
   listID: Scalars['ID'];
   name: Scalars['String'];
   description?: Maybe<Scalars['String']>;
-  img?: Maybe<Scalars['String']>;
+  img?: Maybe<Scalars['Upload']>;
+};
+
+
+export type MutationUpdateProfileArgs = {
+  username: Scalars['String'];
+  bio?: Maybe<Scalars['String']>;
+  avatar?: Maybe<Scalars['Upload']>;
+  profileImg?: Maybe<Scalars['Upload']>;
 };
 
 export type Query = {
@@ -275,6 +284,10 @@ export type User = {
   bookmarkIDs: Array<Maybe<Scalars['ID']>>;
   notifications: Array<Maybe<Notification>>;
   listIDs: Array<Maybe<Scalars['ID']>>;
+  likedTweetIDs: Array<Maybe<Scalars['ID']>>;
+  bio?: Maybe<Scalars['String']>;
+  profileImg?: Maybe<Scalars['String']>;
+  joinDate?: Maybe<Scalars['Date']>;
   /** Gets all the tweets in user's tweet list */
   tweets?: Maybe<Array<Maybe<Tweet>>>;
   /** Gets all the user's bookmarked tweets */
@@ -283,6 +296,8 @@ export type User = {
   mentions?: Maybe<Array<Maybe<Tweet>>>;
   /** Gets all the lists the user has */
   lists?: Maybe<Array<Maybe<List>>>;
+  /** Gets all the user's liked tweets */
+  likedTweets?: Maybe<Array<Maybe<Tweet>>>;
 };
 
 
@@ -371,6 +386,9 @@ export type UserDbObject = {
   bookmarkIDs: Array<Maybe<string>>,
   notifications: Array<Maybe<Notification>>,
   listIDs: Array<Maybe<string>>,
+  likedTweetIDs: Array<Maybe<string>>,
+  bio?: Maybe<string>,
+  profileImg?: Maybe<string>,
 };
 
 export type UnconfirmedUserDbObject = {

@@ -112,7 +112,7 @@ export const userResolvers = {
     ) => {
       const user = await userModel.findOne({ handle });
       return user;
-  },
+    },
   },
   Mutation: {
     setAvatarImage: async (
@@ -221,6 +221,37 @@ export const userResolvers = {
 
       return savedUser;
     },
+    updateProfile: async (
+      parent: any,
+      { username, bio, avatar, profileImg }: MutationUpdateProfileArgs,
+      { models: { userModel }, user }: Context
+    ) => {
+      const userDoc = await userModel.findById(user);
+      if (!userDoc)
+        throw new ApolloError(
+          "Must be signed in to update profile.",
+          NOT_AUTHENICATED
+        );
+
+      // Set the new username/bio
+      userDoc.username = username;
+      userDoc.bio = bio;
+
+      // Upload the avatar and profileImg to image server
+      if (avatar) {
+        const uploadURL = await processUpload(avatar);
+        userDoc.avatar = uploadURL;
+      }
+      if (profileImg) {
+        const uploadURL = await processUpload(profileImg);
+        userDoc.profileImg = uploadURL;
+      }
+
+      // Save changes
+      const savedUser = await userDoc.save();
+      console.log(savedUser);
+      return savedUser;
+    },
   },
   User: {
     tweets: async (
@@ -294,7 +325,7 @@ export const userResolvers = {
       // Get all the tweets from user's likedTweetIDs
       const likedTweets = await tweetModel.find({
         _id: { $in: parent.likedTweetIDs },
-        });
+      });
 
       // Sort the tweets by their date
       likedTweets.sort(
