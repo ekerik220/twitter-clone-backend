@@ -231,9 +231,7 @@ export type Tweet = {
   __typename?: 'Tweet';
   id?: Maybe<Scalars['ID']>;
   userID: Scalars['ID'];
-  username: Scalars['String'];
   handle: Scalars['String'];
-  avatar?: Maybe<Scalars['String']>;
   date: Scalars['DateTime'];
   body?: Maybe<Scalars['String']>;
   images?: Maybe<Array<Maybe<Scalars['String']>>>;
@@ -244,6 +242,8 @@ export type Tweet = {
   retweetParent?: Maybe<Scalars['ID']>;
   /** Returns all the comments on this tweet */
   comments?: Maybe<Array<Maybe<Tweet>>>;
+  username?: Maybe<Scalars['String']>;
+  avatar?: Maybe<Scalars['String']>;
 };
 
 
@@ -336,9 +336,7 @@ export type ListDbObject = {
 export type TweetDbObject = {
   _id?: Maybe<ObjectID>,
   userID: string,
-  username: string,
   handle: string,
-  avatar?: Maybe<string>,
   date: any,
   body?: Maybe<string>,
   images?: Maybe<Array<Maybe<string>>>,

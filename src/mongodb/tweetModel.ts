@@ -6,16 +6,9 @@ const tweetSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  username: {
-    type: String,
-    required: true,
-  },
   handle: {
     type: String,
     required: true,
-  },
-  avatar: {
-    type: String,
   },
   date: {
     type: Date,

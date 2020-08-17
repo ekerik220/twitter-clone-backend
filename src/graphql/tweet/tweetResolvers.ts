@@ -40,9 +40,7 @@ export const tweetResolvers = {
       // Create a tweet object
       const tweet: Tweet = {
         userID: userDoc._id,
-        username: userDoc.username,
         handle: userDoc.handle,
-        avatar: userDoc.avatar,
         date: new Date(),
         body,
         likeIDs: [],
@@ -155,7 +153,7 @@ export const tweetResolvers = {
     addOrRemoveLike: async (
       parent: any,
       { tweet }: MutationAddOrRemoveLikeArgs,
-      { models: { tweetModel }, user }: Context
+      { models: { tweetModel, userModel }, user }: Context
     ) => {
       // Check the user is logged in
       if (!user)
@@ -354,6 +352,34 @@ export const tweetResolvers = {
       );
 
       return comments;
+    },
+    username: async (
+      parent: Tweet,
+      args: any,
+      { models: { userModel } }: Context
+    ) => {
+      const user = await userModel.findById(parent.userID);
+      if (!user)
+        throw new ApolloError(
+          "User with that ID does not exist.",
+          DOCUMENT_NOT_FOUND
+        );
+
+      return user.username;
+    },
+    avatar: async (
+      parent: Tweet,
+      args: any,
+      { models: { userModel } }: Context
+    ) => {
+      const user = await userModel.findById(parent.userID);
+      if (!user)
+        throw new ApolloError(
+          "User with that ID does not exist.",
+          DOCUMENT_NOT_FOUND
+        );
+
+      return user.avatar;
     },
   },
 };

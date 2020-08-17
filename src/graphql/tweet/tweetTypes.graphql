@@ -16,9 +16,7 @@ extend type Query {
 type Tweet @entity {
   id: ID @id
   userID: ID! @column
-  username: String! @column
   handle: String! @column
-  avatar: String @column
   date: DateTime! @column
   body: String @column
   images: [String] @column
@@ -31,4 +29,6 @@ type Tweet @entity {
   Returns all the comments on this tweet
   """
   comments: [Tweet]
+  username: String
+  avatar: String
 }
