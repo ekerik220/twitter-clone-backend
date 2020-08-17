@@ -29,6 +29,11 @@ extend type Query {
   or handle.
   """
   searchUsers(term: String!): [User]!
+
+  """
+  Get user by their handle.
+  """
+  getUserByHandle(handle: String!): User!
 }
 
 extend type Mutation {

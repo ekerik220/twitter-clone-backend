@@ -159,6 +159,8 @@ export type Query = {
   /** Checks if a user exists with given email. */
   emailTaken: Scalars['Boolean'];
   getList?: Maybe<List>;
+  /** Get user by their handle. */
+  getUserByHandle: User;
   root?: Maybe<Scalars['String']>;
   search?: Maybe<Array<Maybe<Tweet>>>;
   /**
@@ -185,6 +187,11 @@ export type QueryEmailTakenArgs = {
 
 export type QueryGetListArgs = {
   id?: Maybe<Scalars['ID']>;
+};
+
+
+export type QueryGetUserByHandleArgs = {
+  handle: Scalars['String'];
 };
 
 

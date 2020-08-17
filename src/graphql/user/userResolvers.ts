@@ -9,6 +9,8 @@ import {
   MutationAddOrRemoveBookmarkArgs,
   Notification,
   QuerySearchUsersArgs,
+  QueryGetUserByHandleArgs,
+  MutationUpdateProfileArgs,
 } from "../../typescript/graphql-codegen-typings";
 import cloudinary from "cloudinary";
 import { ApolloError } from "apollo-server";
@@ -103,6 +105,14 @@ export const userResolvers = {
 
       return users;
     },
+    getUserByHandle: async (
+      parent: any,
+      { handle }: QueryGetUserByHandleArgs,
+      { models: { userModel } }: Context
+    ) => {
+      const user = await userModel.findOne({ handle });
+      return user;
+  },
   },
   Mutation: {
     setAvatarImage: async (
