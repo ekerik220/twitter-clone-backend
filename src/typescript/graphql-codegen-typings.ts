@@ -66,6 +66,7 @@ export type Mutation = {
 export type MutationAddCommentArgs = {
   replyingToID: Scalars['ID'];
   body: Scalars['String'];
+  img?: Maybe<Scalars['Upload']>;
 };
 
 
@@ -89,11 +90,13 @@ export type MutationAddOrRemoveLikeArgs = {
 export type MutationAddRetweetArgs = {
   parentID: Scalars['ID'];
   body?: Maybe<Scalars['String']>;
+  img?: Maybe<Scalars['Upload']>;
 };
 
 
 export type MutationAddTweetArgs = {
   body: Scalars['String'];
+  img?: Maybe<Scalars['Upload']>;
 };
 
 

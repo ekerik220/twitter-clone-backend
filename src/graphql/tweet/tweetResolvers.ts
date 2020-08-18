@@ -14,12 +14,13 @@ import { Context } from "../../main";
 import { ApolloError } from "apollo-server";
 import { NOT_AUTHENICATED, DOCUMENT_NOT_FOUND } from "../../utils/errorCodes";
 import _ from "lodash";
+import { processUpload } from "../../utils/processUpload";
 
 export const tweetResolvers = {
   Mutation: {
     addTweet: async (
       parent: any,
-      { body }: MutationAddTweetArgs,
+      { body, img }: MutationAddTweetArgs,
       { models: { userModel, tweetModel, hashtagModel }, user }: Context
     ) => {
       // Check that we're logged in
@@ -37,6 +38,9 @@ export const tweetResolvers = {
           DOCUMENT_NOT_FOUND
         );
 
+      // process img and get the URL (if we have an img)
+      const imgURL = img ? await processUpload(img) : null;
+
       // Create a tweet object
       const tweet: Tweet = {
         userID: userDoc._id,
@@ -46,6 +50,7 @@ export const tweetResolvers = {
         likeIDs: [],
         commentIDs: [],
         retweetIDs: [],
+        images: imgURL ? [imgURL] : [],
       };
 
       // Add the tweet object to Tweet collection
@@ -103,7 +108,7 @@ export const tweetResolvers = {
     },
     addComment: async (
       parent: any,
-      { replyingToID, body }: MutationAddCommentArgs,
+      { replyingToID, body, img }: MutationAddCommentArgs,
       { models: { tweetModel, userModel }, user }: Context
     ) => {
       // Get the tweet we're replying to
@@ -122,6 +127,9 @@ export const tweetResolvers = {
           NOT_AUTHENICATED
         );
 
+      // process img and get the URL (if we have an img)
+      const imgURL = img ? await processUpload(img) : null;
+
       // Make a tweet object (comment)
       const comment: Tweet = {
         userID: userDoc._id,
@@ -134,6 +142,7 @@ export const tweetResolvers = {
         commentIDs: [],
         retweetIDs: [],
         replyingTo: parentTweet.handle,
+        images: imgURL ? [imgURL] : [],
       };
 
       // Add comment to tweet DB
@@ -191,7 +200,7 @@ export const tweetResolvers = {
     },
     addRetweet: async (
       parent: any,
-      { parentID, body }: MutationAddRetweetArgs,
+      { parentID, body, img }: MutationAddRetweetArgs,
       { models: { tweetModel, userModel }, user }: Context
     ) => {
       // Get parent tweet
@@ -210,6 +219,9 @@ export const tweetResolvers = {
           NOT_AUTHENICATED
         );
 
+      // process img and get the URL (if we have an img)
+      const imgURL = img ? await processUpload(img) : null;
+
       // Create tweet object
       const tweet: Tweet = {
         userID: userDoc._id,
@@ -222,6 +234,7 @@ export const tweetResolvers = {
         commentIDs: [],
         retweetIDs: [],
         retweetParent: parentID,
+        images: imgURL ? [imgURL] : [],
       };
 
       // Add the tweet to the DB

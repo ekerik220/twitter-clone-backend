@@ -1,10 +1,10 @@
 scalar DateTime
 
 extend type Mutation {
-  addTweet(body: String!): Tweet
-  addComment(replyingToID: ID!, body: String!): Tweet
+  addTweet(body: String!, img: Upload): Tweet
+  addComment(replyingToID: ID!, body: String!, img: Upload): Tweet
   addOrRemoveLike(tweet: ID!): [ID]!
-  addRetweet(parentID: ID!, body: String): Tweet
+  addRetweet(parentID: ID!, body: String, img: Upload): Tweet
   undoRetweet(parentID: ID!): Tweet
 }
 

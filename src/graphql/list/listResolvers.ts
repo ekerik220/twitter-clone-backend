@@ -35,7 +35,7 @@ export const listResolvers = {
           NOT_AUTHENICATED
         );
 
-      const uploadUrl = await processUpload(img);
+      const uploadUrl = img ? await processUpload(img) : undefined;
 
       // create a list object
       const list: List = {
@@ -85,17 +85,33 @@ export const listResolvers = {
       { listID, name, description, img }: MutationUpdateListArgs,
       { models: { listModel } }: Context
     ) => {
-      const uploadURL = await processUpload(img);
+      let updatedList;
 
-      const updatedList = await listModel.findByIdAndUpdate(
-        listID,
-        {
-          name,
-          description,
-          img: uploadURL,
-        },
-        { new: true }
-      );
+      // if img Upload was sent, process it and update
+      // img along with name and description
+      if (img) {
+        const uploadURL = await processUpload(img);
+        updatedList = await listModel.findByIdAndUpdate(
+          listID,
+          {
+            name,
+            description,
+            img: uploadURL,
+          },
+          { new: true }
+        );
+        // else, just update name and description and leave
+        // the img as it was
+      } else {
+        updatedList = await listModel.findByIdAndUpdate(
+          listID,
+          {
+            name,
+            description,
+          },
+          { new: true }
+        );
+      }
 
       return updatedList;
     },
