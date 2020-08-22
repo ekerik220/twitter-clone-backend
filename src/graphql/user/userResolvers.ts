@@ -256,16 +256,37 @@ export const userResolvers = {
     tweets: async (
       parent: User,
       args: any,
-      { models: { tweetModel } }: Context
+      { models: { tweetModel, userModel } }: Context
     ) => {
-      // Get user's tweets
       const tweetIDs = parent.tweetIDs;
-      let tweets = await tweetModel.find({ _id: { $in: tweetIDs } });
-
-      // get user's retweets as well
       const retweetIDs = parent.retweetIDs;
-      const retweets = await tweetModel.find({ _id: { $in: retweetIDs } });
-      tweets = [...tweets, ...retweets];
+
+      // Get followed users
+      const followedUsers = await userModel.find({
+        _id: { $in: parent.followingIDs },
+      });
+
+      // Get followed user's retweet IDs and tweet IDs
+      let followedRetweetIDs: string[] = [];
+      let followedTweetIDs: string[] = [];
+      followedUsers.forEach((user) => {
+        followedTweetIDs = followedTweetIDs.concat(user.tweetIDs as string[]);
+        followedRetweetIDs = followedRetweetIDs.concat(
+          user.retweetIDs as string[]
+        );
+      });
+
+      // Get user's tweets + retweets + follower tweets + follow retweets
+      const tweets = await tweetModel.find({
+        _id: {
+          $in: [
+            ...tweetIDs,
+            ...retweetIDs,
+            ...followedRetweetIDs,
+            ...followedTweetIDs,
+          ],
+        },
+      });
 
       // Sort tweets by date
       tweets.sort(
