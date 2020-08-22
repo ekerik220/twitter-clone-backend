@@ -5,6 +5,7 @@ import {
   QueryGetListArgs,
   MutationUpdateListArgs,
   MutationDeleteListArgs,
+  MutationRemoveUserFromListArgs,
 } from "../../typescript/graphql-codegen-typings";
 import { Context } from "../../main";
 import { ApolloError } from "apollo-server";
@@ -66,13 +67,25 @@ export const listResolvers = {
       { models: { listModel, userModel } }: Context
     ) => {
       // Add userID to the list's userIDs field
-      await listModel.findByIdAndUpdate(
-        listID,
-        {
-          $push: { userIDs: userID },
-        },
-        { new: true }
-      );
+      await listModel.findByIdAndUpdate(listID, {
+        $push: { userIDs: userID },
+      });
+
+      // Get the document of the user we added to return so front-end
+      // can update the UI without making another request
+      const userDoc = userModel.findById(userID);
+
+      return userDoc;
+    },
+    removeUserFromList: async (
+      parent: any,
+      { userID, listID }: MutationRemoveUserFromListArgs,
+      { models: { listModel, userModel } }: Context
+    ) => {
+      // Remove userID from the list's userIDs field
+      await listModel.findByIdAndUpdate(listID, {
+        $pull: { userIDs: userID },
+      });
 
       // Get the document of the user we added to return so front-end
       // can update the UI without making another request

@@ -49,12 +49,14 @@ export type Mutation = {
    */
   confirmUser: Scalars['ID'];
   deleteList: List;
+  deleteTweet?: Maybe<Tweet>;
   followOrUnfollow: User;
   /**
    * Take an email or username and a password. If it matches a user in the database,
    * send back a JWT with the user ID.
    */
   login: Scalars['String'];
+  removeUserFromList: User;
   root?: Maybe<Scalars['String']>;
   setAvatarImage: User;
   undoRetweet?: Maybe<Tweet>;
@@ -130,6 +132,11 @@ export type MutationDeleteListArgs = {
 };
 
 
+export type MutationDeleteTweetArgs = {
+  tweetID: Scalars['ID'];
+};
+
+
 export type MutationFollowOrUnfollowArgs = {
   id: Scalars['ID'];
 };
@@ -138,6 +145,12 @@ export type MutationFollowOrUnfollowArgs = {
 export type MutationLoginArgs = {
   loginName: Scalars['String'];
   password: Scalars['String'];
+};
+
+
+export type MutationRemoveUserFromListArgs = {
+  userID: Scalars['ID'];
+  listID: Scalars['ID'];
 };
 
 

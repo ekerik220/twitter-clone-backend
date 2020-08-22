@@ -6,6 +6,7 @@ extend type Mutation {
   addOrRemoveLike(tweet: ID!): [ID]!
   addRetweet(parentID: ID!, body: String, img: Upload): Tweet
   undoRetweet(parentID: ID!): Tweet
+  deleteTweet(tweetID: ID!): Tweet
 }
 
 extend type Query {

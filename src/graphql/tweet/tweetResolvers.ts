@@ -9,6 +9,7 @@ import {
   Hashtag,
   QuerySearchArgs,
   Notification,
+  MutationDeleteTweetArgs,
 } from "../../typescript/graphql-codegen-typings";
 import { Context } from "../../main";
 import { ApolloError } from "apollo-server";
@@ -314,6 +315,19 @@ export const tweetResolvers = {
 
       // return the removed retweet document so front end can make local updates
       return retweet;
+    },
+    deleteTweet: async (
+      parent: any,
+      { tweetID }: MutationDeleteTweetArgs,
+      { models: { tweetModel, userModel }, user }: Context
+    ) => {
+      // remove the tweet ID from user's tweet list
+      await userModel.findByIdAndUpdate(user, { $pull: { tweetIDs: tweetID } });
+
+      // delete the tweet from the DB
+      const deletedTweet = await tweetModel.findByIdAndRemove(tweetID);
+
+      return deletedTweet;
     },
   },
   Query: {
