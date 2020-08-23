@@ -41,7 +41,9 @@ export const sendConfirmationCodeEmail = async (
 
   // set up a transporter (sender)
   const transporter = nodemailer.createTransport({
-    service: "gmail",
+    host: "mail.privateemail.com",
+    port: 465,
+    secure: true,
     auth: {
       user: environment.email.username,
       pass: environment.email.password,
