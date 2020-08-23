@@ -359,6 +359,12 @@ export const tweetResolvers = {
         replyingTo: null,
         retweetParent: null,
       });
+
+      // Sort the tweets by their date
+      results.sort(
+        (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+      );
+
       return results;
     },
   },
