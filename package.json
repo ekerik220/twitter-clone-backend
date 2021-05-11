@@ -27,7 +27,7 @@
     "graphql-cli": "^4.0.1-alpha-36eb24e.0",
     "graphql-scalars": "^1.2.1",
     "jsonwebtoken": "^8.5.1",
-    "lodash": "^4.17.19",
+    "lodash": "^4.17.21",
     "mongoose": "^5.9.21",
     "mongoose-beautiful-unique-validation": "^7.1.1",
     "nodemailer": "^6.4.10"
