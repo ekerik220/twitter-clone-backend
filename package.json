@@ -30,7 +30,7 @@
     "lodash": "^4.17.19",
     "mongoose": "^5.9.21",
     "mongoose-beautiful-unique-validation": "^7.1.1",
-    "nodemailer": "^6.4.10"
+    "nodemailer": "^6.4.16"
   },
   "devDependencies": {
     "@graphql-codegen/cli": "1.16.2",
