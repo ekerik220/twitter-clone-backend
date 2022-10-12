@@ -20,7 +20,7 @@
     "@types/jsonwebtoken": "^8.5.0",
     "@types/lodash": "^4.14.158",
     "@types/nodemailer": "^6.4.0",
-    "apollo-server": "^2.15.1",
+    "apollo-server": "^2.25.4",
     "bcrypt": "^5.0.0",
     "cloudinary": "^1.22.0",
     "graphql": "^15.3.0",
